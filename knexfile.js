@@ -7,7 +7,9 @@ module.exports = {
     database: 'd68vinefp82nsr',
     user: 'gvclarjnfymigb',
     password: 'a7b8c21a2378e0871aafc570f26e468cb29fbee57eec9a6a3f7661eb64470002',
-    ssl: true
+    ssl: {
+      rejectUnauthorized: false
+    }
   },
   migrations: {
     tableName: 'knex_migrations'
