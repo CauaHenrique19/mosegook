@@ -1,6 +1,7 @@
 // Update with your config settings.
 
 module.exports = {
+  /*
   client: 'pg',
   connection: {
     host: 'ec2-54-164-241-193.compute-1.amazonaws.com',
@@ -14,7 +15,7 @@ module.exports = {
   migrations: {
     tableName: 'knex_migrations'
   }
-  /*
+  */
   development: {
     client: 'pg',
     connection: {
@@ -28,10 +29,12 @@ module.exports = {
   },
   production: {
     client: 'pg',
-    connection: process.env.DATABASE_URL,
+    connection: {
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }
+    },
     migrations: {
       tableName: 'knex_migrations'
     }
   }
-  */
 };
