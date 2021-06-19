@@ -41,6 +41,7 @@ class MediasController{
                     'medias.url_poster', 'medias.key_poster_timeline', 'medias.url_poster_timeline',
                     'categories.name as category_name', 'categories.color as category_color', 'categories.icon as category_icon')
             .join('categories', 'categories.id', 'medias.category_id')
+            .orderBy('id')
 
         for(let i = 0; i < medias.length; i++){
             const gendersOfMedias = await knex('genders_in_medias')
