@@ -72,11 +72,10 @@ class MediasController{
                     .select('genders_in_medias.id as genders_in_medias_id','genders_in_medias.gender_id as id', 'genders.name', 'genders.color')
                     .join('genders', 'genders.id', 'genders_in_medias.gender_id')
                     .where({ media_id: medias[i].id })
+                    medias[i].genders = gendersOfMedias
             }
-
-            medias[i].genders = gendersOfMedias
         }
-        
+
         res.json(medias)
     }
     async delete(req, res){
