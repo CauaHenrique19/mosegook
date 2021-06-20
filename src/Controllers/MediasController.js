@@ -45,7 +45,7 @@ class MediasController{
 
         for(let i = 0; i < medias.length; i++){
             const gendersOfMedias = await knex('genders_in_medias')
-                .select('genders_in_medias.gender_id as id', 'genders.name', 'genders.color')
+                .select('genders_in_medias.id as genders_in_medias_id','genders_in_medias.gender_id as id', 'genders.name', 'genders.color')
                 .join('genders', 'genders.id', 'genders_in_medias.gender_id')
                 .where({ media_id: medias[i].id })
 
@@ -54,8 +54,30 @@ class MediasController{
         
         res.json(medias)
     }
-    async update(req, res){
+    async byCategories(req, res){
+        const categoryId = req.params.id
+
+        const medias = await knex('medias')
+            .select('medias.id', 'medias.name', 'medias.synopsis', 
+                    'medias.category_id', 'medias.avaliation', 'medias.key_poster',
+                    'medias.url_poster', 'medias.key_poster_timeline', 'medias.url_poster_timeline',
+                    'categories.name as category_name', 'categories.color as category_color', 'categories.icon as category_icon')
+            .join('categories', 'categories.id', 'medias.category_id')
+            .orderBy('id')
+            .where({ category_id : categoryId })
+
+        for(let i = 0; i < medias.length; i++){
+            if(medias){
+                const gendersOfMedias = await knex('genders_in_medias')
+                    .select('genders_in_medias.id as genders_in_medias_id','genders_in_medias.gender_id as id', 'genders.name', 'genders.color')
+                    .join('genders', 'genders.id', 'genders_in_medias.gender_id')
+                    .where({ media_id: medias[i].id })
+            }
+
+            medias[i].genders = gendersOfMedias
+        }
         
+        res.json(medias)
     }
     async delete(req, res){
         const mediaId = req.params.id

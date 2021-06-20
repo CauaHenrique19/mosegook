@@ -21,6 +21,7 @@ routes.put('/categories/:id', CategoriesController.update)
 routes.delete('/categories/:id', CategoriesController.delete)
 
 routes.get('/medias', MediasController.index)
+routes.get('/medias/:id', MediasController.byCategories)
 routes.post('/medias', multer(multerConfig).any(), MediasController.create)
 routes.delete('/medias/:id', MediasController.delete)
 
