@@ -25,21 +25,25 @@ class UsersControllers{
 
         try{
             const userExistsInDb = await knex('users')
-                .select('user')
+                .select('user', 'email')
                 .where({ user })
+                .orWhere({ email })
 
             if(userExistsInDb.length >= 1){
                 s3.deleteObject({
                     Bucket: 'mosegook',
                     Key: userFinal.key_image_user
                 }).promise()
-                return res.status(400).json({ message: 'Já existe um usuário com esse user, tente utilizar outro!' })
+                return res.status(400).json({ message: 'Já existe um usuário com esse user ou email, tente utilizar outro!' })
             }
 
             const userDb = await knex('users')
                 .insert(userFinal, '*')
 
-            return res.json(userDb)
+            delete userDb.password
+            const token = jwt.sign({ id: userDb.id }, process.env.SECRET)
+
+            return res.json({ auth: true, token, userDb })
         }
         catch(error){
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao criar usuário' })
