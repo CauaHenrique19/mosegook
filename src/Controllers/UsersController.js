@@ -23,7 +23,7 @@ class UsersControllers{
             const hash = bcrypt.hashSync(password, salt)
     
             const userFinal = { email, password: hash, name, user, gender, key_image_user: req.file.key, url_image: req.file.location, admin: true }
-            
+
             const userExistsInDb = await knex('users')
                 .select('user', 'email')
                 .where({ user })
@@ -37,13 +37,13 @@ class UsersControllers{
                 return res.status(400).json({ message: 'Já existe um usuário com esse user ou email, tente utilizar outro!' })
             }
 
-            let userDb = await knex('users')
+            const userDb = await knex('users')
                 .insert(userFinal, '*')
 
             delete userDb[0].password
-            const token = jwt.sign({ id: userDb[0].id }, process.env.SECRET)
+            //const token = jwt.sign({ id: userDb[0].id }, process.env.SECRET)
 
-            return res.json({ auth: true, token, userDb })
+            return res.json({ auth: true, /*token,*/ userDb })
         }
         catch(error){
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao criar usuário' })
