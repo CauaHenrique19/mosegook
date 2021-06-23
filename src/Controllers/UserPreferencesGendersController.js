@@ -17,6 +17,8 @@ class UserPreferencesGendersController{
     async index(req, res){
         const { user_id } = req.body
 
+        if(!user_id) return res.status(400).json({ message: 'Informe o id do usuário' })
+
         const gendersPreference = await knex('user_preferences_genders')
             .select('user_preferences_genders.id', 'user_preferences_genders.user_id', 'user_preferences_genders.gender_id', 'genders.name', 'genders.color')
             .join('genders', 'user_preferences_genders.gender_id', 'genders.id')
