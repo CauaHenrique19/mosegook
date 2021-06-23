@@ -43,7 +43,7 @@ class UsersControllers{
             delete userDb[0].password
             const token = jwt.sign({ id: userDb[0].id }, process.env.SECRET)
 
-            return res.json({ auth: true, /*token,*/ userDb })
+            return res.json({ auth: true, token, userDb })
         }
         catch(error){
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao criar usuário' })
