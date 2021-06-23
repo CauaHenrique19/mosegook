@@ -41,7 +41,7 @@ class UsersControllers{
                 .insert(userFinal, '*')
 
             delete userDb[0].password
-            const token = jwt.sign({ id: userDb.id }, process.env.SECRET)
+            const token = jwt.sign({ id: userDb[0].id }, process.env.SECRET)
 
             return res.json({ auth: true, token, userDb })
         }
