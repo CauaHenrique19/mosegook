@@ -37,10 +37,10 @@ class UsersControllers{
                 return res.status(400).json({ message: 'Já existe um usuário com esse user ou email, tente utilizar outro!' })
             }
 
-            const userDb = await knex('users')
+            let userDb = await knex('users')
                 .insert(userFinal, '*')
 
-            delete userDb.password
+            delete userDb[0].password
             const token = jwt.sign({ id: userDb.id }, process.env.SECRET)
 
             return res.json({ auth: true, token, userDb })
