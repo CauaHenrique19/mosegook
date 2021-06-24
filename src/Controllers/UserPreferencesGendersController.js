@@ -5,7 +5,7 @@ class UserPreferencesGendersController{
         const { user_id, gender_id } = req.body
 
         if(!user_id) return res.status(400).json({ message: 'Informe o id do usuário' })
-        if(!gender_id) return res.status(400).json({ message: 'Informe o id do usuário' })
+        if(!gender_id) return res.status(400).json({ message: 'Informe o id do gênero' })
 
         const objectsToInsert = gender_id.map(gender => { return { user_id, gender_id: gender } })
 
