@@ -6,7 +6,7 @@ module.exports = {
     connection: {
       database: 'mosegook',
       user:     'postgres',
-      password: 'caua987311363'
+      password: process.env.PASSWORD_DB
     },
     migrations: {
       tableName: 'knex_migrations'
