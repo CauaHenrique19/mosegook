@@ -29,7 +29,7 @@ class UserPreferencesMediasController{
     delete(req, res){
         const userPreferenceId = req.params.id
 
-        knex('user_preferences_genders')
+        knex('user_preferences_medias')
             .delete()
             .where({ id: userPreferenceId })
             .then(() => res.json({ message: 'Preferência excluída com sucesso!' }))
