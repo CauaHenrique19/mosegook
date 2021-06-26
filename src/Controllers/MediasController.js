@@ -78,6 +78,33 @@ class MediasController{
 
         res.json(medias)
     }
+    async statistics(req, res){
+        const categoryId = req.params.categoryId
+
+        const mostRated = await knex('avaliations')
+            .select('medias.name')
+            .count('avaliations.media_id as amount_avaliations')
+            .join('medias', 'medias.id', 'avaliations.media_id')
+            .where({ category_id: categoryId })
+            .groupBy('media_id', 'medias.name')
+            .orderBy('amount_avaliations', 'DESC')
+            .limit(1)
+
+        const amountAvaliations = await knex('avaliations')
+            .select('medias.category_id')
+            .count('medias.category_id as amount_avaliations')
+            .join('medias', 'medias.id', 'avaliations.media_id')
+            .where({ category_id: categoryId })
+            .groupBy('medias.category_id', 'category_id')
+        
+        const amountMedias = await knex('medias')
+            .select('category_id as category')
+            .count('medias.category_id as amount_avaliations')
+            .where({ category_id: categoryId })
+            .groupBy('category', 'category_id')
+
+        return res.json({mostRated, amountAvaliations, amountMedias})
+    }
     async delete(req, res){
         const mediaId = req.params.id
 
