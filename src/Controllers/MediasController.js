@@ -97,13 +97,7 @@ class MediasController{
             .where({ category_id: categoryId })
             .groupBy('medias.category_id', 'category_id')
         
-        const amountMedias = await knex('medias')
-            .select('category_id as category')
-            .count('medias.category_id as amount_avaliations')
-            .where({ category_id: categoryId })
-            .groupBy('category', 'category_id')
-
-        return res.json({mostRated, amountAvaliations, amountMedias})
+        return res.json({mostRated, amountAvaliations})
     }
     async delete(req, res){
         const mediaId = req.params.id
