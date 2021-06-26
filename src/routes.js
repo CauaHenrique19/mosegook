@@ -8,6 +8,7 @@ const CategoriesController = require('./Controllers/CategoriesController')
 const MediasController = require('./Controllers/MediasController')
 const UserPreferencesGendersController = require('./Controllers/UserPreferencesGendersController')
 const UserPreferencesMediasController = require('./Controllers/UserPreferencesMediasController')
+const AvaliationsController = require('./Controllers/AvaliationsController')
 
 routes.post('/signup', multer(multerConfig).single('file'), UsersController.signup)
 routes.post('/login', UsersController.login)
@@ -34,5 +35,9 @@ routes.delete('/user-preferences-genders/:id', UserPreferencesGendersController.
 routes.get('/user-preferences-medias', UserPreferencesMediasController.index)
 routes.post('/user-preferences-medias', UserPreferencesMediasController.create)
 routes.delete('/user-preferences-medias/:id', UserPreferencesMediasController.delete)
+
+routes.get('/avaliations', AvaliationsController.index)
+routes.post('/avaliations', AvaliationsController.create)
+routes.delete('/avaliations/:id', AvaliationsController.delete)
 
 module.exports = routes
