@@ -47,13 +47,16 @@ class AvaliationsController{
         const avaliationsTimeline = await knex.raw(`
             select 
                 avaliations.*,
-                medias.name,
+                medias.name as media_name,
                 categories.color,
-                categories.icon
+                categories.icon,
+                users.name as user_name,
+                user.users
             from avaliations
             inner join follow on follow.following_user_id = avaliations.user_id
             inner join medias on medias.id = avaliations.media_id
             inner join categories on categories.id = medias.category_id
+            inner join users on users.id = avaliations.user_id
             where ${usersWhereComand}
             order by created_at DESC;`)
 
