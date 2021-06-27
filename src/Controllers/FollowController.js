@@ -16,11 +16,11 @@ class FollowController{
         res.json(followDB)
     }
     async usersToFollow(req, res){
-        const { user_id } = req.body
+        const { id } = req.params
 
         const users = await knex('users')
             .select('id', 'name', 'user', 'url_image')
-            .whereNot({ id: user_id })
+            .whereNot({ id })
             .limit(5)
 
         return res.json(users)
