@@ -111,6 +111,29 @@ class MediasController {
 
         return res.json({ mostRated, amountAvaliations, mostGoodRated: mostGoodRated.rows })
     }
+    async mediasToDiscover(req, res) {
+        const userId = req.params.id
+
+        const gendersPreferences = await knex('user_preferences_genders')
+            .select('*')
+            .where({ user_id : userId })
+
+        const gendersWhereComand = gendersPreferences.map((gender, index) => {
+            return index === 0 ? `genders_in_medias.gender_id = ${gender.gender_id} ` : `and not genders_in_medias.gender_id = ${gender.gender_id} `
+        }).join('')
+
+        const medias = await knex.raw(`
+            select distinct on (category_id)
+                medias.*
+            from medias
+            inner join genders_in_medias on genders_in_medias.media_id = medias.id
+            where not ${gendersWhereComand}
+            group by medias.id
+            order by category_id, random();
+        `)
+
+        return res.json({ medias: medias.rows })
+    }
     async delete(req, res) {
         const mediaId = req.params.id
 
