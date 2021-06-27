@@ -132,6 +132,15 @@ class MediasController {
             order by category_id, random();
         `)
 
+        for(let i = 0; i < medias.rows.length; i++){
+            const genderOfMedia = await knex('genders_in_medias')
+                .select('genders.*')
+                .join('genders', 'genders.id', 'genders_in_medias.gender_id')
+                .where({ media_id: medias.rows[i].id })
+
+            medias.rows[i].genders = genderOfMedia
+        }
+
         return res.json({ medias: medias.rows })
     }
     async delete(req, res) {
