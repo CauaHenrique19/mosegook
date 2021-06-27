@@ -42,6 +42,7 @@ routes.get('/avaliations', AvaliationsController.index)
 routes.post('/avaliations', AvaliationsController.create)
 routes.delete('/avaliations/:id', AvaliationsController.delete)
 
+routes.get('/users-to-follow', FollowController.usersToFollow)
 routes.post('/follow', FollowController.create)
 routes.delete('/follow', FollowController.delete)
 
