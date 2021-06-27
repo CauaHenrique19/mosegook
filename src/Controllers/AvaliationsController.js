@@ -51,7 +51,7 @@ class AvaliationsController{
                 categories.color,
                 categories.icon,
                 users.name as user_name,
-                user.users
+                users.user
             from avaliations
             inner join follow on follow.following_user_id = avaliations.user_id
             inner join medias on medias.id = avaliations.media_id
