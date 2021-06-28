@@ -8,7 +8,7 @@ const s3 = new aws.S3()
 class UsersControllers{
     async signup(req, res){
         try{
-            const { email, password, confirmPassword, name, user, gender } = req.body
+            const { email, password, confirmPassword, name, user, gender, admin } = req.body
     
             if(!email) return res.status(400).json({ message: 'Informe o email por favor!' })
             if(!password) return res.status(400).json({ message: 'Informe a senha por favor!' })
@@ -16,13 +16,13 @@ class UsersControllers{
             if(!name) return res.status(400).json({ message: 'Informe o nome de usuário por favor!' })
             if(!user) return res.status(400).json({ message: 'Informe o user de usuário por favor!' })
             if(!gender) return res.status(400).json({ message: 'Informe o seu gênero por favor!' })
-    
+
             if(password !== confirmPassword) return res.status(400).json({ message: 'Senhas não compativeis!' })
-    
+
             const salt = bcrypt.genSaltSync(10)
             const hash = bcrypt.hashSync(password, salt)
     
-            const userFinal = { email, password: hash, name, user, gender, key_image_user: req.file.key, url_image: req.file.location, admin: true }
+            const userFinal = { email, password: hash, name, user, gender, key_image_user: req.file.key, url_image: req.file.location, admin: admin ? true : false }
 
             const userExistsInDb = await knex('users')
                 .select('user', 'email')
@@ -46,7 +46,7 @@ class UsersControllers{
             return res.json({ auth: true, token, userDb })
         }
         catch(error){
-            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao criar usuário' })
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao criar usuário', error: error.message })
         }
     }
     async login(req, res){
