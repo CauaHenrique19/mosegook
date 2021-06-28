@@ -10,6 +10,7 @@ const UserPreferencesGendersController = require('./Controllers/UserPreferencesG
 const UserPreferencesMediasController = require('./Controllers/UserPreferencesMediasController')
 const AvaliationsController = require('./Controllers/AvaliationsController')
 const FollowController = require('./Controllers/FollowController')
+const ComentsController = require('./Controllers/ComentsController')
 
 routes.post('/signup', multer(multerConfig).single('file'), UsersController.signup)
 routes.post('/login', UsersController.login)
@@ -43,6 +44,9 @@ routes.get('/avaliations', AvaliationsController.index)
 routes.get('/avaliations-timeline/:id', AvaliationsController.getAvaliationsTimeline)
 routes.post('/avaliations', AvaliationsController.create)
 routes.delete('/avaliations/:id', AvaliationsController.delete)
+
+routes.post('/coments', ComentsController.create)
+routes.delete('/coments/:id', ComentsController.delete)
 
 routes.get('/users-to-follow/:id', FollowController.usersToFollow)
 routes.post('/follow', FollowController.create)
