@@ -40,27 +40,59 @@ class AvaliationsController{
             .select('following_user_id')
             .where({ user_id: userId })
 
-        const usersWhereComand = userFollowing.map((user, index) => {
-            return index === 0 ? `avaliations.user_id = ${user.following_user_id} ` : `or avaliations.user_id = ${user.following_user_id} `     
-        }).join('')
+        if(userFollowing.length === 0){
 
-        const avaliationsTimeline = await knex.raw(`
-            select 
-                avaliations.*,
-                medias.name as media_name,
-                categories.color,
-                categories.icon,
-                users.name as user_name,
-                users.user
-            from avaliations
-            inner join follow on follow.following_user_id = avaliations.user_id
-            inner join medias on medias.id = avaliations.media_id
-            inner join categories on categories.id = medias.category_id
-            inner join users on users.id = avaliations.user_id
-            where ${usersWhereComand}
-            order by created_at DESC;`)
+            const mediasPreference = await knex('user_preferences_medias')
+                .select('media_id')
+                .where({ user_id : userId })
 
-        return res.json({ avaliations : avaliationsTimeline.rows })
+            const usersWhereComand = mediasPreference.map((media, index) => {
+                return index === 0 ? `avaliations.media_id = ${media.media_id} ` : `or avaliations.media_id = ${media.media_id} `   
+            }).join('')
+
+            const avaliationsTimeline = await knex.raw(`
+                select 
+                    avaliations.*,
+                    medias.name as media_name,
+                    categories.color,
+                    categories.icon,
+                    users.name as user_name,
+                    users.user
+                from avaliations
+                inner join follow on follow.following_user_id = avaliations.user_id
+                inner join medias on medias.id = avaliations.media_id
+                inner join categories on categories.id = medias.category_id
+                inner join users on users.id = avaliations.user_id
+                where ${usersWhereComand}
+                order by created_at DESC;`)
+
+            return res.json({ avaliations : avaliationsTimeline.rows })
+        }
+        else{
+
+            const usersWhereComand = userFollowing.map((user, index) => {
+                return index === 0 ? `avaliations.user_id = ${user.following_user_id} ` : `or avaliations.user_id = ${user.following_user_id} `     
+            }).join('')
+    
+            const avaliationsTimeline = await knex.raw(`
+                select 
+                    avaliations.*,
+                    medias.name as media_name,
+                    categories.color,
+                    categories.icon,
+                    users.name as user_name,
+                    users.user
+                from avaliations
+                inner join follow on follow.following_user_id = avaliations.user_id
+                inner join medias on medias.id = avaliations.media_id
+                inner join categories on categories.id = medias.category_id
+                inner join users on users.id = avaliations.user_id
+                where ${usersWhereComand}
+                order by created_at DESC;`)
+    
+            return res.json({ avaliations : avaliationsTimeline.rows })
+        }
+
     }
     delete(req, res){
         const avaliation_id = req.params.id
