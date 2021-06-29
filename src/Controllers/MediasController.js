@@ -112,36 +112,41 @@ class MediasController {
         return res.json({ mostRated, amountAvaliations, mostGoodRated: mostGoodRated.rows })
     }
     async mediasToDiscover(req, res) {
-        const userId = req.params.id
-
-        const gendersPreferences = await knex('user_preferences_genders')
-            .select('*')
-            .where({ user_id : userId })
-
-        const gendersWhereComand = gendersPreferences.map((gender, index) => {
-            return index === 0 ? `genders_in_medias.gender_id = ${gender.gender_id} ` : `and not genders_in_medias.gender_id = ${gender.gender_id} `
-        }).join('')
-
-        const medias = await knex.raw(`
-            select distinct on (category_id)
-                medias.*
-            from medias
-            inner join genders_in_medias on genders_in_medias.media_id = medias.id
-            where not ${gendersWhereComand}
-            group by medias.id
-            order by category_id, random();
-        `)
-
-        for(let i = 0; i < medias.rows.length; i++){
-            const genderOfMedia = await knex('genders_in_medias')
-                .select('genders.*')
-                .join('genders', 'genders.id', 'genders_in_medias.gender_id')
-                .where({ media_id: medias.rows[i].id })
-
-            medias.rows[i].genders = genderOfMedia
+        try{
+            const userId = req.params.id
+    
+            const gendersPreferences = await knex('user_preferences_genders')
+                .select('*')
+                .where({ user_id : userId })
+    
+            const gendersWhereComand = gendersPreferences.map((gender, index) => {
+                return index === 0 ? `genders_in_medias.gender_id = ${gender.gender_id} ` : `and not genders_in_medias.gender_id = ${gender.gender_id} `
+            }).join('')
+    
+            const medias = await knex.raw(`
+                select distinct on (category_id)
+                    medias.*
+                from medias
+                inner join genders_in_medias on genders_in_medias.media_id = medias.id
+                where not ${gendersWhereComand}
+                group by medias.id
+                order by category_id, random();
+            `)
+    
+            for(let i = 0; i < medias.rows.length; i++){
+                const genderOfMedia = await knex('genders_in_medias')
+                    .select('genders.*')
+                    .join('genders', 'genders.id', 'genders_in_medias.gender_id')
+                    .where({ media_id: medias.rows[i].id })
+    
+                medias.rows[i].genders = genderOfMedia
+            }
+            return res.json({ medias: medias.rows })
+        }
+        catch(error){
+            return res.json({ message: 'Ocorreu um erro ao tentar buscar mídias pra você! Provavelmente você não selecionou gêneros da sua preferência.' })
         }
 
-        return res.json({ medias: medias.rows })
     }
     async mediasRatedForFollow(req, res){
         const userId = req.params.id
