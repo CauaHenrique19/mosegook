@@ -1,4 +1,5 @@
 const knex = require("../database/connection")
+const { formatDate } = require('../utils/formatDate')
 
 class AvaliationsController{
     async index(req, res){
@@ -23,7 +24,7 @@ class AvaliationsController{
             media_id,
             content,
             stars,
-            created_at: new Date().toUTCString()
+            created_at: new Date()
         }
 
         const avaliationsDB = await knex('avaliations')
@@ -90,7 +91,7 @@ class AvaliationsController{
                 where ${usersWhereComand}
                 order by created_at DESC;`)
 
-            avaliationsTimeline.rows.map(avaliation => console.log(new Date(avaliation.created_at)))
+            avaliationsTimeline.rows.map(avaliation => avaliation.created_at = formatDate(avaliation.created_at))
     
             return res.json({ avaliations : avaliationsTimeline.rows })
         }
