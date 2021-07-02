@@ -23,7 +23,7 @@ class AvaliationsController{
             media_id,
             content,
             stars,
-            created_at: new Date()
+            created_at: new Date().toUTCString()
         }
 
         const avaliationsDB = await knex('avaliations')
@@ -89,6 +89,8 @@ class AvaliationsController{
                 inner join users on users.id = avaliations.user_id
                 where ${usersWhereComand}
                 order by created_at DESC;`)
+
+            avaliationsTimeline.rows.map(avaliation => console.log(new Date(avaliation.created_at)))
     
             return res.json({ avaliations : avaliationsTimeline.rows })
         }
