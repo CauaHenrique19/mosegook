@@ -107,6 +107,7 @@ class AvaliationsController{
             .join('medias', 'medias.id', 'avaliations.media_id')
             .join('categories', 'categories.id', 'medias.category_id')
             .where('users.user', user)
+            .orderBy('avaliations.created_at', 'DESC')
         avaliationsDB.map(avaliation => avaliation.created_at = formatDate(avaliation.created_at))
 
         return res.json({ avaliations: avaliationsDB })
