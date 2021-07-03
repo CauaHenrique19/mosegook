@@ -14,6 +14,7 @@ const ComentsController = require('./Controllers/ComentsController')
 
 routes.post('/signup', multer(multerConfig).single('file'), UsersController.signup)
 routes.post('/login', UsersController.login)
+routes.get('/users/:user', UsersController.getUser)
 
 routes.get('/genders', GendersController.index)
 routes.post('/genders', GendersController.create)
@@ -43,6 +44,7 @@ routes.delete('/user-preferences-medias/:id', UserPreferencesMediasController.de
 
 routes.get('/avaliations', AvaliationsController.index)
 routes.get('/avaliations-timeline/:id', AvaliationsController.getAvaliationsTimeline)
+routes.get('/avaliations/:user', AvaliationsController.getAvaliationsUser)
 routes.post('/avaliations', AvaliationsController.create)
 routes.delete('/avaliations/:id', AvaliationsController.delete)
 

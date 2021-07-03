@@ -97,6 +97,20 @@ class AvaliationsController{
         }
 
     }
+    async getAvaliationsUser(req, res){
+        const user = req.params.user
+
+        const avaliationsDB = await knex('avaliations')
+            .select('avaliations.*', 'medias.name as media_name', 'categories.name as category_name', 
+                    'categories.color as category_color', 'categories.icon as category_icon',)
+            .join('users', 'users.id', 'avaliations.user_id')
+            .join('medias', 'medias.id', 'avaliations.media_id')
+            .join('categories', 'categories.id', 'medias.category_id')
+            .where('users.user', user)
+        avaliationsDB.map(avaliation => avaliation.created_at = formatDate(avaliation.created_at))
+
+        return res.json({ avaliationsDB })
+    }
     delete(req, res){
         const avaliation_id = req.params.id
 

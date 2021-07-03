@@ -75,6 +75,36 @@ class UsersControllers{
             }
         }
     }
+    async getUser(req, res){
+        const user = req.params.user
+
+        const userDB = await knex('users')
+            .select('id', 'name', 'user', 'key_image_user', 'url_image')
+            .where({ user })
+            .first()
+
+        if(!userDB) return res.json({ message: 'Esse usuário não existe!' })
+
+        const followingDB = await knex('follow')
+            .count('id as amount')
+            .where({ user_id: userDB.id })
+
+        const followersDB = await knex('follow')
+            .count('id as amount')
+            .where({ following_user_id : userDB.id })
+
+        const mediasPreferences = await knex('user_preferences_medias')
+            .select('medias.id', 'medias.name', 'medias.url_poster')
+            .join('medias', 'medias.id', 'media_id')
+            .where({ user_id: userDB.id })
+
+        const gendersPreferences = await knex('user_preferences_genders')
+            .select('genders.id', 'genders.name', 'genders.color')
+            .join('genders', 'genders.id', 'gender_id')
+            .where({ user_id: userDB.id })
+
+        return res.json({ user: userDB, following_count: followingDB[0], followers_count: followersDB[0], medias: mediasPreferences, genders: gendersPreferences })
+    }
 }
 
 module.exports = new UsersControllers()
