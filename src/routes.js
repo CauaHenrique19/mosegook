@@ -48,6 +48,7 @@ routes.get('/avaliations/:user', AvaliationsController.getAvaliationsUser)
 routes.post('/avaliations', AvaliationsController.create)
 routes.delete('/avaliations/:id', AvaliationsController.delete)
 
+routes.get('/coments/:user', ComentsController.getComentUser)
 routes.post('/coments', ComentsController.create)
 routes.delete('/coments/:id', ComentsController.delete)
 
