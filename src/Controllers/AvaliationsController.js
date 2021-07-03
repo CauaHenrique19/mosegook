@@ -109,7 +109,7 @@ class AvaliationsController{
             .where('users.user', user)
         avaliationsDB.map(avaliation => avaliation.created_at = formatDate(avaliation.created_at))
 
-        return res.json({ avaliationsDB })
+        return res.json({ avaliations: avaliationsDB })
     }
     delete(req, res){
         const avaliation_id = req.params.id
