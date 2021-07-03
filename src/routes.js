@@ -27,6 +27,7 @@ routes.put('/categories/:id', CategoriesController.update)
 routes.delete('/categories/:id', CategoriesController.delete)
 
 routes.get('/medias', MediasController.index)
+routes.get('/medias/most-rated', MediasController.mostsGoodRated)
 routes.get('/medias/statistics/:categoryId', MediasController.statistics)
 routes.get('/medias/medias-to-discover/:id', MediasController.mediasToDiscover)
 routes.get('/medias-rated-follow/:id', MediasController.mediasRatedForFollow)

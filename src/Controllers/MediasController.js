@@ -112,17 +112,17 @@ class MediasController {
         return res.json({ mostRated, amountAvaliations, mostGoodRated: mostGoodRated.rows })
     }
     async mediasToDiscover(req, res) {
-        try{
+        try {
             const userId = req.params.id
-    
+
             const gendersPreferences = await knex('user_preferences_genders')
                 .select('*')
-                .where({ user_id : userId })
-    
+                .where({ user_id: userId })
+
             const gendersWhereComand = gendersPreferences.map((gender, index) => {
                 return index === 0 ? `genders_in_medias.gender_id = ${gender.gender_id} ` : `and not genders_in_medias.gender_id = ${gender.gender_id} `
             }).join('')
-    
+
             const medias = await knex.raw(`
                 select distinct on (category_id)
                     medias.*
@@ -132,34 +132,34 @@ class MediasController {
                 group by medias.id
                 order by category_id, random();
             `)
-    
-            for(let i = 0; i < medias.rows.length; i++){
+
+            for (let i = 0; i < medias.rows.length; i++) {
                 const genderOfMedia = await knex('genders_in_medias')
                     .select('genders.*')
                     .join('genders', 'genders.id', 'genders_in_medias.gender_id')
                     .where({ media_id: medias.rows[i].id })
-    
+
                 medias.rows[i].genders = genderOfMedia
             }
             return res.json({ medias: medias.rows })
         }
-        catch(error){
+        catch (error) {
             return res.json({ message: 'Ocorreu um erro ao tentar buscar mídias pra você! Provavelmente você não selecionou gêneros da sua preferência.' })
         }
 
     }
-    async mediasRatedForFollow(req, res){
+    async mediasRatedForFollow(req, res) {
         const userId = req.params.id
 
         const userFollowing = await knex('follow')
             .select('following_user_id')
             .where({ user_id: userId })
 
-        if(userFollowing.length > 0){
+        if (userFollowing.length > 0) {
             const whereComand = userFollowing
                 .map((user, index) => index === 0 ? `avaliations.user_id = ${user.following_user_id} ` : `or avaliations.user_id = ${user.following_user_id} `)
                 .join('')
-    
+
             const mediasDB = await knex.raw(`
                 select distinct on (media_id)
                 avaliations.media_id,
@@ -169,33 +169,51 @@ class MediasController {
                 from avaliations
                 inner join medias on medias.id = avaliations.media_id
                 where ${whereComand}`)
-    
-            for(let i = 0; i < mediasDB.rows.length; i++){
+
+            for (let i = 0; i < mediasDB.rows.length; i++) {
                 const genders = await knex('genders_in_medias')
                     .select('genders.name', 'genders.color')
                     .join('genders', 'genders.id', 'genders_in_medias.gender_id')
-                    .where({ media_id : mediasDB.rows[i].media_id })
-    
+                    .where({ media_id: mediasDB.rows[i].media_id })
+
                 mediasDB.rows[i].genders = genders
             }
 
             return res.json({ medias: mediasDB.rows })
         }
-        else{
+        else {
             const mediasDB = await knex.raw(`select medias.id, medias.name, medias.url_poster_timeline, medias.avaliation from medias order by random() limit 5;`)
-            
-            for(let i = 0; i < mediasDB.rows.length; i++){
+
+            for (let i = 0; i < mediasDB.rows.length; i++) {
                 const genders = await knex('genders_in_medias')
                     .select('genders.name', 'genders.color')
                     .join('genders', 'genders.id', 'genders_in_medias.gender_id')
-                    .where({ media_id : mediasDB.rows[i].id })
-    
+                    .where({ media_id: mediasDB.rows[i].id })
+
                 mediasDB.rows[i].genders = genders
             }
-            
+
             return res.json({ medias: mediasDB.rows })
         }
 
+    }
+    async mostsGoodRated(req, res) {
+        const medias = await knex.raw(`
+            select 
+                media_id,
+                to_char(avg(stars), 'FM999999999.0') as average,
+                medias.name,
+                medias.url_poster
+            from avaliations
+            inner join medias on medias.id = avaliations.media_id
+            group by 
+                media_id, 
+                medias.name, 
+                medias.url_poster
+            order by average DESC
+            limit 15;`)
+            
+        return res.json({ medias: medias.rows })
     }
     async delete(req, res) {
         const mediaId = req.params.id
