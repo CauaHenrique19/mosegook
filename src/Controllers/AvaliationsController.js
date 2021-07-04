@@ -12,9 +12,39 @@ class AvaliationsController{
             .join('medias', 'medias.id', 'avaliations.media_id')
             .join('categories', 'categories.id', 'medias.category_id')
 
-        avaliations.map(avaliation => avaliation.created_at = avaliation.created_at.toLocaleString())
+        avaliations.map(avaliation => avaliation.created_at = formatDate(avaliation.created_at))
 
         return res.json(avaliations)
+    }
+    async detailed(req, res){
+        const id = req.params.id
+
+        const avaliationsDB = await knex('avaliations')
+            .select('avaliations.id', 'avaliations.user_id', 'avaliations.media_id', 
+                    'avaliations.content', 'avaliations.created_at', 'avaliations.stars',
+                    'users.name as user_name', 'users.user as user_user', 'medias.name as media_name',
+                    'medias.url_poster','categories.color as category_color', 'categories.icon as category_icon')
+            .join('users', 'users.id', 'avaliations.user_id')
+            .join('medias', 'medias.id', 'avaliations.media_id')
+            .join('categories', 'categories.id', 'medias.category_id')
+            .where('avaliations.id', id)
+            .first()
+
+        avaliationsDB.created_at = formatDate(avaliationsDB.created_at)
+
+        const comentsDB = await knex('coments')
+            .select('coments.*', 'users.name', 'users.user')
+            .join('users', 'users.id', 'coments.user_id')
+            .where({ avaliation_id : id })
+
+        comentsDB.map(coment => coment.created_at = formatDate(coment.created_at))
+
+        const genders = await knex('genders_in_medias')
+            .select('genders_in_medias.id', 'genders.color', 'genders.name')
+            .join('genders', 'genders.id' ,'genders_in_medias.gender_id')
+            .where({ media_id: avaliationsDB.media_id })
+
+        return res.json({ avaliation: avaliationsDB, coments: comentsDB, genders })
     }
     async create(req, res){
         const { user_id, media_id, content, stars } = req.body

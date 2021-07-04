@@ -44,6 +44,7 @@ routes.post('/user-preferences-medias', UserPreferencesMediasController.create)
 routes.delete('/user-preferences-medias/:id', UserPreferencesMediasController.delete)
 
 routes.get('/avaliations', AvaliationsController.index)
+routes.get('/avaliation-detailed/:id', AvaliationsController.detailed)
 routes.get('/avaliations-timeline/:id', AvaliationsController.getAvaliationsTimeline)
 routes.get('/avaliations/:user', AvaliationsController.getAvaliationsUser)
 routes.post('/avaliations', AvaliationsController.create)
