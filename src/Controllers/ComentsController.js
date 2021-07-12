@@ -83,9 +83,12 @@ class ComentsController {
                     .join('avaliations', 'avaliations.id', 'coments.avaliation_id')
                     .join('medias', 'medias.id', 'avaliations.media_id')
                     .join('categories', 'categories.id', 'medias.category_id')
+                    .orderBy('coments.created_at', 'DESC')
                     .whereRaw(comentsWhereComand)
+
+                coments.map(coment => coment.created_at = formatDate(coment.created_at))
     
-                return res.json({ coments })
+                return res.json(coments)
             }
             else if (userFollowing.length > 0) {
                 const usersWhereComand = userFollowing
@@ -100,8 +103,11 @@ class ComentsController {
                     .join('avaliations', 'avaliations.id', 'coments.avaliation_id')
                     .join('medias', 'medias.id', 'avaliations.media_id')
                     .join('categories', 'categories.id', 'medias.category_id')
+                    .orderBy('coments.created_at', 'DESC')
                     .whereRaw(usersWhereComand)
-    
+
+                coments.map(coment => coment.created_at = formatDate(coment.created_at))
+
                 return res.json(coments)
             }
         }
