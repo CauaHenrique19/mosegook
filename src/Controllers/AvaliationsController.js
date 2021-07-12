@@ -65,67 +65,76 @@ class AvaliationsController{
         return res.json(avaliationsDB)
     }
     async getAvaliationsTimeline(req, res){
-        const userId = req.params.id
-
-        const userFollowing = await knex('follow')
-            .select('following_user_id')
-            .where({ user_id: userId })
-
-        if(userFollowing.length === 0){
-
-            const mediasPreference = await knex('user_preferences_medias')
-                .select('media_id')
-                .where({ user_id : userId })
-
-            const usersWhereComand = mediasPreference.map((media, index) => {
-                return index === 0 ? `avaliations.media_id = ${media.media_id} ` : `or avaliations.media_id = ${media.media_id} `   
-            }).join('')
-
-            const avaliationsTimeline = await knex.raw(`
-                select 
-                    avaliations.*,
-                    medias.name as media_name,
-                    categories.color,
-                    categories.icon,
-                    users.name as user_name,
-                    users.user
-                from avaliations
-                inner join follow on follow.following_user_id = avaliations.user_id
-                inner join medias on medias.id = avaliations.media_id
-                inner join categories on categories.id = medias.category_id
-                inner join users on users.id = avaliations.user_id
-                where ${usersWhereComand}
-                order by created_at DESC;`)
-
-            return res.json({ avaliations : avaliationsTimeline.rows })
-        }
-        else{
-
-            const usersWhereComand = userFollowing.map((user, index) => {
-                return index === 0 ? `avaliations.user_id = ${user.following_user_id} ` : `or avaliations.user_id = ${user.following_user_id} `     
-            }).join('')
+        try{
+            const userId = req.params.id
     
-            const avaliationsTimeline = await knex.raw(`
-                select 
-                    avaliations.*,
-                    medias.name as media_name,
-                    categories.color,
-                    categories.icon,
-                    users.name as user_name,
-                    users.user
-                from avaliations
-                inner join follow on follow.following_user_id = avaliations.user_id
-                inner join medias on medias.id = avaliations.media_id
-                inner join categories on categories.id = medias.category_id
-                inner join users on users.id = avaliations.user_id
-                where ${usersWhereComand}
-                order by created_at DESC;`)
-
-            avaliationsTimeline.rows.map(avaliation => avaliation.created_at = formatDate(avaliation.created_at))
+            const userFollowing = await knex('follow')
+                .select('following_user_id')
+                .where({ user_id: userId })
     
-            return res.json({ avaliations : avaliationsTimeline.rows })
-        }
+            if(userFollowing.length === 0){
+                const mediasPreference = await knex('user_preferences_medias')
+                    .select('media_id')
+                    .where({ user_id : userId })
+    
+                if(mediasPreference.length === 0){
+                    return res.json({ message: 'O usuário não possui preferência por mídias.' })
+                }
+    
+                const usersWhereComand = mediasPreference
+                    .map((media, index) => index === 0 ? `avaliations.media_id = ${media.media_id} ` : `or avaliations.media_id = ${media.media_id} `)
+                    .join('')
+    
+                const avaliationsTimeline = await knex.raw(`
+                    select 
+                        avaliations.*,
+                        medias.name as media_name,
+                        categories.color,
+                        categories.icon,
+                        users.name as user_name,
+                        users.user
+                    from avaliations
+                    inner join follow on follow.following_user_id = avaliations.user_id
+                    inner join medias on medias.id = avaliations.media_id
+                    inner join categories on categories.id = medias.category_id
+                    inner join users on users.id = avaliations.user_id
+                    where ${usersWhereComand}
+                    order by created_at DESC;`)
 
+                avaliationsTimeline.rows.map(avaliation => avaliation.created_at = formatDate(avaliation.created_at))
+
+                return res.json({ avaliations : avaliationsTimeline.rows })
+            }
+            else{
+    
+                const usersWhereComand = userFollowing
+                    .map((user, index) => index === 0 ? `avaliations.user_id = ${user.following_user_id} ` : `or avaliations.user_id = ${user.following_user_id} `)
+                    .join('')
+        
+                const avaliationsTimeline = await knex.raw(`
+                    select 
+                        avaliations.*,
+                        medias.name as media_name,
+                        categories.color,
+                        categories.icon,
+                        users.name as user_name,
+                        users.user
+                    from avaliations
+                    inner join follow on follow.following_user_id = avaliations.user_id
+                    inner join medias on medias.id = avaliations.media_id
+                    inner join categories on categories.id = medias.category_id
+                    inner join users on users.id = avaliations.user_id
+                    where ${usersWhereComand}
+                    order by created_at DESC;`)
+    
+                avaliationsTimeline.rows.map(avaliation => avaliation.created_at = formatDate(avaliation.created_at))
+        
+                return res.json({ avaliations : avaliationsTimeline.rows })
+            }
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado!', error: error.message })
+        }
     }
     async getAvaliationsUser(req, res){
         const user = req.params.user
