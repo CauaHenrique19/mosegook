@@ -51,6 +51,7 @@ routes.post('/avaliations', AvaliationsController.create)
 routes.delete('/avaliations/:id', AvaliationsController.delete)
 
 routes.get('/coments/:user', ComentsController.getComentUser)
+routes.get('/coments-timeline/:id', ComentsController.getComentsTimeline)
 routes.post('/coments', ComentsController.create)
 routes.delete('/coments/:id', ComentsController.delete)
 
