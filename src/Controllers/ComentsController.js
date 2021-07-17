@@ -31,7 +31,8 @@ class ComentsController {
             const comentsDB = await knex('coments')
                 .select('coments.id', 'coments.avaliation_id', 'coments.content',
                     'coments.created_at', 'medias.name as media_name', 'categories.name as category_name',
-                    'categories.color as category_color', 'categories.icon as category_icon')
+                    'categories.color as category_color', 'categories.icon as category_icon', 'users.user as user_user',
+                    'users.name as user_name')
                 .join('users', 'users.id', 'user_id')
                 .join('avaliations', 'avaliations.id', 'coments.avaliation_id')
                 .join('medias', 'medias.id', 'avaliations.media_id')
