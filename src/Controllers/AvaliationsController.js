@@ -89,10 +89,10 @@ class AvaliationsController{
                     select 
                         avaliations.*,
                         medias.name as media_name,
-                        categories.color,
-                        categories.icon,
+                        categories.color as category_color,
+                        categories.icon as category_icon,
                         users.name as user_name,
-                        users.user
+                        users.user as user_user
                     from avaliations
                     inner join follow on follow.following_user_id = avaliations.user_id
                     inner join medias on medias.id = avaliations.media_id
@@ -115,10 +115,10 @@ class AvaliationsController{
                     select 
                         avaliations.*,
                         medias.name as media_name,
-                        categories.color,
-                        categories.icon,
+                        categories.color as category_color,
+                        categories.icon as category_icon,
                         users.name as user_name,
-                        users.user
+                        users.user as user_user
                     from avaliations
                     inner join follow on follow.following_user_id = avaliations.user_id
                     inner join medias on medias.id = avaliations.media_id
@@ -141,7 +141,8 @@ class AvaliationsController{
 
         const avaliationsDB = await knex('avaliations')
             .select('avaliations.*', 'medias.name as media_name', 'categories.name as category_name', 
-                    'categories.color as category_color', 'categories.icon as category_icon',)
+                    'categories.color as category_color', 'categories.icon as category_icon', 'users.name as user_name', 
+                    'users.user as user_user')
             .join('users', 'users.id', 'avaliations.user_id')
             .join('medias', 'medias.id', 'avaliations.media_id')
             .join('categories', 'categories.id', 'medias.category_id')
