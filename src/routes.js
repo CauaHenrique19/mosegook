@@ -11,6 +11,7 @@ const UserPreferencesMediasController = require('./Controllers/UserPreferencesMe
 const AvaliationsController = require('./Controllers/AvaliationsController')
 const FollowController = require('./Controllers/FollowController')
 const ComentsController = require('./Controllers/ComentsController')
+const LikesController = require('./Controllers/LikesController')
 
 routes.post('/signup', multer(multerConfig).single('file'), UsersController.signup)
 routes.post('/login', UsersController.login)
@@ -59,5 +60,8 @@ routes.delete('/coments/:id', ComentsController.delete)
 routes.get('/users-to-follow/:id', FollowController.usersToFollow)
 routes.post('/follow', FollowController.create)
 routes.delete('/follow', FollowController.delete)
+
+routes.post('/likes/avaliations', LikesController.createLikeAvaliations)
+routes.delete('/likes/avaliations/:id', LikesController.deleteLikeAvaliations)
 
 module.exports = routes
