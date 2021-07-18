@@ -15,6 +15,7 @@ const ComentsController = require('./Controllers/ComentsController')
 routes.post('/signup', multer(multerConfig).single('file'), UsersController.signup)
 routes.post('/login', UsersController.login)
 routes.get('/users/:user', UsersController.getUser)
+routes.get('/users/search/:search', UsersController.searchUser)
 
 routes.get('/genders', GendersController.index)
 routes.post('/genders', GendersController.create)
