@@ -63,5 +63,6 @@ routes.delete('/follow', FollowController.delete)
 
 routes.post('/likes/avaliations', LikesController.createLikeAvaliations)
 routes.delete('/likes/avaliations/:id', LikesController.deleteLikeAvaliations)
+routes.get('/likes/avaliations/user/:userId/:id', LikesController.getLikeAvaliationsPerUser)
 
 module.exports = routes
