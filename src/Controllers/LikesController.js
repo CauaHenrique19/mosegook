@@ -32,10 +32,14 @@ class LikesController{
                 .where({ user_id: userId })
                 .andWhere({ avaliation_id: id })
                 .first()
-            
-            like.created_at = formatDate(like.created_at)
-    
-            return res.json(like)
+
+            if(like){
+                like.created_at = formatDate(like.created_at)
+                return res.json(like)
+            }
+            else{
+                return res.json({})
+            }
         }
         catch(error){
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao pegar curtida', error: error.message })
