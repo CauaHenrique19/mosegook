@@ -1,4 +1,6 @@
 const knex = require('../database/connection')
+const crypto = require('crypto')
+const fs = require('fs')
 const aws = require('aws-sdk')
 
 const s3 = new aws.S3()
@@ -53,6 +55,55 @@ class MediasController {
         }
 
         res.json(medias)
+    }
+    async update(req, res){
+        
+        //const filename = req.files.image.name
+        
+        const { id, name, synopsis, category_id, avaliation, genders } = req.body
+        const media = { id, name, synopsis, category_id, avaliation }
+
+        console.log(req.body)
+
+        const fields = [
+            { poster: 'key_poster' },
+            { poster_timeline: 'key_poster_timeline' }
+        ]
+
+        if(req.files){
+
+            const arrayFiles = Object.entries(req.files)
+
+            arrayFiles.map(file => { 
+                /*
+                file.shift()
+                const filepath = file[0].path
+                const mimetype = file[0].type
+                const fileStream = fs.createReadStream(filepath);
+
+                const newImage = await s3.putObject({
+                    Bucket: 'mosegook',
+                    Key: '506e9bd93a965e74a79c2496707607d5-vinagdores-ultimato-wallpaper.png',
+                    Body: fileStream,
+                    ContentType: mimetype,
+                    ACL: 'public-read'
+                }).promise()
+                */
+            }) 
+        }
+
+        //const hash = crypto.randomBytes(16).toString('hex')
+        //const key = `${hash}-${filename}`
+
+        
+        /*
+        var params = { Bucket: 'mosegook', Key: `${hash.toString('hex')}-${filename}`, Body: fileStream, ACL: 'public-read', ContentType: mimetype }
+        var options = { partSize: 10 * 1024 * 1024, queueSize: 1 }
+
+        const newImage = await s3.upload(params, options).promise()
+        */
+
+        return res.json({})
     }
     async byCategories(req, res) {
         const categoryId = req.params.id

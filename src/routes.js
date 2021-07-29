@@ -34,6 +34,7 @@ routes.get('/medias/statistics/:categoryId', MediasController.statistics)
 routes.get('/medias/medias-to-discover/:id', MediasController.mediasToDiscover)
 routes.get('/medias-rated-follow/:id', MediasController.mediasRatedForFollow)
 routes.get('/medias/:id', MediasController.byCategories)
+routes.put('/medias/:id', MediasController.update)
 routes.post('/medias', multer(multerConfig).any(), MediasController.create)
 routes.delete('/medias/:id', MediasController.delete)
 
