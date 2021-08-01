@@ -311,6 +311,29 @@ class MediasController {
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao buscar mídias mais bem avaliadas', error: error.message })
         }
     }
+    async search(req, res){
+        try{
+            const search = req.params.search.toLowerCase()
+
+            const { rows: medias } = await knex
+                .raw(`select id, name, url_poster, url_poster_timeline from medias 
+                    where lower(name) like '%${search}%';`)
+    
+            for(let i = 0; i < medias.length; i++){
+                const gendersOfMedia = await knex('genders_in_medias')
+                    .select('genders_in_medias.gender_id', 'genders.name', 'genders.color')
+                    .join('genders', 'genders.id', 'genders_in_medias.gender_id')
+                    .where({ media_id : medias[i].id })
+    
+                medias[i].genders = gendersOfMedia
+            }
+    
+            return res.json({ medias })
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao buscar mídias pelo nome', error: error.message })
+        }
+    }
     async delete(req, res) {
         try{
             const mediaId = req.params.id
