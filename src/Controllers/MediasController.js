@@ -316,8 +316,13 @@ class MediasController {
             const search = req.params.search.toLowerCase()
 
             const { rows: medias } = await knex
-                .raw(`select id, name, url_poster, url_poster_timeline from medias 
-                    where lower(name) like '%${search}%';`)
+                .raw(`
+                    select 
+                        medias.id, medias.name, medias.url_poster, 
+                        medias.url_poster_timeline, categories.color, categories.icon
+                    from medias
+                    inner join categories on categories.id = medias.category_id
+                    where lower(medias.name) like '%${search}%';`)
     
             for(let i = 0; i < medias.length; i++){
                 const gendersOfMedia = await knex('genders_in_medias')
