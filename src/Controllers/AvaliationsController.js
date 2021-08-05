@@ -130,6 +130,16 @@ class AvaliationsController {
                     where ${usersWhereComand}
                     order by created_at DESC;`)
 
+                const myAvaliations = await knex('avaliations')
+                    .select('avaliations.*', 'medias.name as media_name', 'categories.color as category_color', 
+                            'categories.icon as category_icon', 'users.name as user_name', 'users.user as user_user')
+                    .join('medias', 'medias.id', 'avaliations.media_id')
+                    .join('categories', 'categories.id', 'medias.category_id')
+                    .join('users', 'users.id', 'avaliations.user_id')
+                    .where({ user_id: userId })
+
+                avaliationsTimeline.rows.push(...myAvaliations)
+
                 for (let i = 0; i < avaliationsTimeline.rows.length; i++) {
 
                     const amountComents = await knex('coments')
@@ -150,7 +160,6 @@ class AvaliationsController {
                 return res.json({ avaliations: avaliationsTimeline.rows })
             }
             else {
-
                 const usersWhereComand = userFollowing
                     .map((user, index) => index === 0 ? `avaliations.user_id = ${user.following_user_id} ` : `or avaliations.user_id = ${user.following_user_id} `)
                     .join('')
@@ -171,6 +180,16 @@ class AvaliationsController {
                     where ${usersWhereComand}
                     order by created_at DESC;`)
 
+                const myAvaliations = await knex('avaliations')
+                    .select('avaliations.*', 'medias.name as media_name', 'categories.color as category_color', 
+                            'categories.icon as category_icon', 'users.name as user_name', 'users.user as user_user')
+                    .join('medias', 'medias.id', 'avaliations.media_id')
+                    .join('categories', 'categories.id', 'medias.category_id')
+                    .join('users', 'users.id', 'avaliations.user_id')
+                    .where({ user_id: userId })
+
+                avaliationsTimeline.rows.push(...myAvaliations)
+
                 for (let i = 0; i < avaliationsTimeline.rows.length; i++) {
                     const amountComents = await knex('coments')
                         .count('avaliation_id')
@@ -186,6 +205,7 @@ class AvaliationsController {
                     avaliationsTimeline.rows[i].amountComents = amountComents.count
                     avaliationsTimeline.rows[i].amountLikes = amountLikes.count
                 }
+
 
                 return res.json({ avaliations: avaliationsTimeline.rows })
             }
