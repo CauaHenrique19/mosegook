@@ -136,6 +136,7 @@ class AvaliationsController {
                     .join('medias', 'medias.id', 'avaliations.media_id')
                     .join('categories', 'categories.id', 'medias.category_id')
                     .join('users', 'users.id', 'avaliations.user_id')
+                    .orderBy('created_at', 'desc')
                     .where({ user_id: userId })
 
                 avaliationsTimeline.rows.push(...myAvaliations)
@@ -157,6 +158,16 @@ class AvaliationsController {
                     avaliationsTimeline.rows[i].amountLikes = amountLikes.count
                 }
 
+                avaliationsTimeline.rows.sort((a, b) => {
+                    if (a.created_at < b.created_at) {
+                        return 1;
+                    }
+                    if (a.created_at > b.created_at) {
+                        return -1;
+                    }
+                    return 0
+                })
+                
                 return res.json({ avaliations: avaliationsTimeline.rows })
             }
             else {
@@ -186,6 +197,7 @@ class AvaliationsController {
                     .join('medias', 'medias.id', 'avaliations.media_id')
                     .join('categories', 'categories.id', 'medias.category_id')
                     .join('users', 'users.id', 'avaliations.user_id')
+                    .orderBy('created_at', 'desc')
                     .where({ user_id: userId })
 
                 avaliationsTimeline.rows.push(...myAvaliations)
@@ -206,6 +218,15 @@ class AvaliationsController {
                     avaliationsTimeline.rows[i].amountLikes = amountLikes.count
                 }
 
+                avaliationsTimeline.rows.sort((a, b) => {
+                    if (a.created_at < b.created_at) {
+                        return 1;
+                    }
+                    if (a.created_at > b.created_at) {
+                        return -1;
+                    }
+                    return 0
+                })
 
                 return res.json({ avaliations: avaliationsTimeline.rows })
             }
