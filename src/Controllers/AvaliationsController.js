@@ -85,7 +85,7 @@ class AvaliationsController {
             const avaliationsDB = await knex('avaliations')
                 .insert(avaliations, '*')
 
-            avaliationsDB.map(avaliation => avaliation.created_at = avaliation.created_at.toLocaleString())
+            avaliationsDB.map(avaliation => avaliation.created_at = formatDate(avaliation.created_at))
 
             return res.json(avaliationsDB)
         }
