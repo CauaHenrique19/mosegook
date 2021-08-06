@@ -3,21 +3,20 @@ const knex = require('../database/connection')
 class UserPreferencesGendersController{
     async create(req, res){
         try{
-            console.log(req.body)
             const { user_id, gender_id } = req.body
-    
+            
             if(!user_id) return res.status(400).json({ message: 'Informe o id do usuário' })
             if(!gender_id) return res.status(400).json({ message: 'Informe o id do gênero' })
-    
+            
             const objectsToInsert = gender_id.map(gender => { return { user_id, gender_id: gender } })
-    
+            
             const genderPreferencesDB = await knex('user_preferences_genders')
-                .insert(objectsToInsert, '*')
-    
+            .insert(objectsToInsert, '*')
+            
             return res.json(genderPreferencesDB)
         }
         catch(error){
-            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao salvar preferências por gêneros', message: error.message })
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao salvar preferências por gêneros', error: error.message })
         }
     }
     async index(req, res){
@@ -34,7 +33,7 @@ class UserPreferencesGendersController{
             return res.json(gendersPreference)
         }
         catch(error){
-            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao pegar preferências por gêneros', message: error.message })
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao pegar preferências por gêneros', error: error.message })
         }
     }
     async delete(req, res){
@@ -48,7 +47,7 @@ class UserPreferencesGendersController{
                 .catch(error => res.status(500).json({ message: 'Ocorreu um erro inesperado ao tentar excluir preferência', error: error.message }))
         }
         catch(error){
-            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao excluir preferências por gêneros', message: error.message })
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao excluir preferências por gêneros', error: error.message })
         }
     }
 }

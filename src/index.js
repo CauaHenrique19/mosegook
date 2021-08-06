@@ -6,9 +6,11 @@ const cors = require('cors')
 const formidable = require('express-formidable')
 
 app.use(cors())
-app.use(express.json())
 app.use(formidable())
-app.use(express.urlencoded({ extended: true }))
+app.use((req, res, next) => {
+    req.body = req.fields
+    next()
+})
 app.use(require('./routes'))
 
 app.listen(process.env.PORT || 3001, () => console.log('[BACKEND] Rodando'))
