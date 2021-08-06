@@ -6,7 +6,7 @@ const cors = require('cors')
 const formidable = require('express-formidable')
 
 app.use(cors())
-app.use(formidable())
+app.use(formidable({ multiples: true }))
 app.use((req, res, next) => {
     req.body = req.fields
     next()

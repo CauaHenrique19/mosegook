@@ -2,7 +2,6 @@ const knex = require('../database/connection')
 const crypto = require('crypto')
 const fs = require('fs')
 const aws = require('aws-sdk')
-const { json } = require('express')
 
 const s3 = new aws.S3()
 
@@ -10,16 +9,35 @@ class MediasController {
     async create(req, res) {
         try{
             const { name, synopsis, category_id, avaliation } = req.body
-            const { key: key_poster, location: url_poster } = req.files[0]
-            const { key: key_poster_timeline, location: url_poster_timeline } = req.files[1]
-    
-            const media = { name, synopsis, category_id, avaliation, key_poster, url_poster, key_poster_timeline, url_poster_timeline }
-            const { genders } = req.body
-    
+            const genders = JSON.parse(req.body.genders)
+
+            const filesArray = Object.entries(req.files)
+            
+            const returnsUploads = await Promise.all(filesArray.map(async (file) => {
+                file.shift()
+                const randomBytes = crypto.randomBytes(16).toString('hex')
+                const fileStream = fs.createReadStream(file[0].path)
+                const fileName = file[0].name
+                const mimetype = file[0].type
+                
+                const params = { Bucket: 'mosegook', Key: `${randomBytes}-${fileName}`, Body: fileStream, ContentType: mimetype, ACL: 'public-read' }
+                const { Key, Location } = await s3.upload(params).promise()
+                
+                return { Key, Location }
+            }))
+
+            const media = { 
+                name, synopsis, category_id, avaliation, 
+                key_poster: returnsUploads[0].Key, 
+                url_poster: returnsUploads[0].Location, 
+                key_poster_timeline: returnsUploads[1].Key, 
+                url_poster_timeline: returnsUploads[1].Location
+            }
+
             const mediaDB = await knex('medias')
                 .insert(media, '*')
     
-            const objectsToInsert = genders.map(genderId => { return { gender_id: genderId, media_id: mediaDB[0].id } })
+            const objectsToInsert = genders.map(genderId => ({gender_id: genderId, media_id: mediaDB[0].id }))
     
             const gendersInMediaInDb = await knex('genders_in_medias')
                 .insert(objectsToInsert, 'gender_id')
@@ -37,6 +55,7 @@ class MediasController {
     
             mediaDB[0].genders = gendersDB
             res.json(mediaDB)
+            
         }
         catch(error){
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao criar mídia', error: error.message })

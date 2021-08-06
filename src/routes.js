@@ -1,6 +1,4 @@
 const routes = require('express').Router()
-const multer = require('multer')
-const multerConfig = require('./config/multer')
 
 const UsersController = require('./Controllers/UsersController')
 const GendersController = require('./Controllers/GendersController')
@@ -36,7 +34,7 @@ routes.get('/medias-rated-follow/:id', MediasController.mediasRatedForFollow)
 routes.get('/medias/:id', MediasController.byCategories)
 routes.get('/medias/search/:search', MediasController.search)
 routes.put('/medias/:id', MediasController.update)
-routes.post('/medias', multer(multerConfig).any(), MediasController.create)
+routes.post('/medias', MediasController.create)
 routes.delete('/medias/:id', MediasController.delete)
 
 routes.get('/user-preferences-genders', UserPreferencesGendersController.index)
