@@ -1,5 +1,7 @@
 const knex = require('../database/connection')
 const bcrypt = require('bcrypt')
+const crypto = require('crypto')
+const fs = require('fs')
 const jwt = require('jsonwebtoken')
 const aws = require('aws-sdk')
 
@@ -8,39 +10,43 @@ const s3 = new aws.S3()
 class UsersControllers{
     async signup(req, res){
         try{
-            const { email, password, confirmPassword, name, user, gender, admin } = req.body
-    
+            const { email, password, confirmPassword, name, user, gender, admin } = req.fields
+
+            const userExistsInDb = await knex('users')
+                .select('user', 'email')
+                .where({ user })
+                .orWhere({ email })
+            
+            if(userExistsInDb.length >= 1){
+                return res.status(400).json({ message: 'Já existe um usuário com esse user ou email, tente utilizar outro!' })
+            }
+            
             if(!email) return res.status(400).json({ message: 'Informe o email por favor!' })
             if(!password) return res.status(400).json({ message: 'Informe a senha por favor!' })
             if(!confirmPassword) return res.status(400).json({ message: 'Informe a confirmação de senha por favor!' })
             if(!name) return res.status(400).json({ message: 'Informe o nome de usuário por favor!' })
             if(!user) return res.status(400).json({ message: 'Informe o user de usuário por favor!' })
             if(!gender) return res.status(400).json({ message: 'Informe o seu gênero por favor!' })
-
             if(password !== confirmPassword) return res.status(400).json({ message: 'Senhas não compativeis!' })
-
+            
             const salt = bcrypt.genSaltSync(10)
             const hash = bcrypt.hashSync(password, salt)
-    
-            const userFinal = { email, password: hash, name, user, gender, key_image_user: req.file.key, url_image: req.file.location, admin: admin ? true : false }
+            
+            const randomBytes = crypto.randomBytes(16).toString('hex')
+            const fileStream = fs.createReadStream(req.files.file.path)
+            const fileName = req.files.file.name
+            const mimetype = req.files.file.type
 
-            const userExistsInDb = await knex('users')
-                .select('user', 'email')
-                .where({ user })
-                .orWhere({ email })
+            const params = { Bucket: 'mosegook', Key: `${randomBytes}-${fileName}`, Body: fileStream, ContentType: mimetype, ACL: 'public-read' }
+            const { Key, Location } = await s3.upload(params).promise()
 
-            if(userExistsInDb.length >= 1){
-                s3.deleteObject({
-                    Bucket: 'mosegook',
-                    Key: userFinal.key_image_user
-                }).promise()
-                return res.status(400).json({ message: 'Já existe um usuário com esse user ou email, tente utilizar outro!' })
-            }
+            const userFinal = { email, password: hash, name, user, gender, key_image_user: Key, url_image: Location, admin: admin ? true : false }
 
             const userDb = await knex('users')
                 .insert(userFinal, '*')
-
+            
             delete userDb[0].password
+
             const token = jwt.sign({ id: userDb[0].id }, process.env.SECRET)
 
             return res.json({ auth: true, token, userDb })

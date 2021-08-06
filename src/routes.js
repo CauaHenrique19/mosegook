@@ -13,7 +13,7 @@ const FollowController = require('./Controllers/FollowController')
 const ComentsController = require('./Controllers/ComentsController')
 const LikesController = require('./Controllers/LikesController')
 
-routes.post('/signup', multer(multerConfig).single('file'), UsersController.signup)
+routes.post('/signup', UsersController.signup)
 routes.post('/login', UsersController.login)
 routes.get('/users/:user', UsersController.getUser)
 routes.get('/users/search/:search', UsersController.searchUser)
