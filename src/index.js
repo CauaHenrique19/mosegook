@@ -1,8 +1,8 @@
 require('dotenv').config()
 
 const express = require('express')
-const cors = require('cors')
 const app = express()
+const cors = require('cors')
 const formidable = require('express-formidable')
 
 app.use(cors())
