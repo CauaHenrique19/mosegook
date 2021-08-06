@@ -39,7 +39,7 @@ class FollowController{
     }
     async followUser(req, res){
         try{
-            const { user_id, following_user_id } = req.body
+            const { user_id, following_user_id } = req.params
     
             const follow = await knex('follow')
                 .select('*')
