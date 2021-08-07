@@ -101,8 +101,8 @@ class ComentsController {
                     .where('coments.user_id', userId)
                     .orderBy('coments.created_at', 'DESC')
 
-                coments.push(myComents)
-                coments[0].map(coment => coment.created_at = formatDate(coment.created_at))
+                coments.push(...myComents)
+                coments.map(coment => coment.created_at = formatDate(coment.created_at))
 
                 return res.json(coments)
             }
@@ -133,12 +133,10 @@ class ComentsController {
                     .where('coments.user_id', userId)
                     .orderBy('coments.created_at', 'DESC')
 
-                coments.push(myComents)
-                console.log(coments)
-
+                coments.push(...myComents)
                 coments.map(coment => coment.created_at = formatDate(coment.created_at))
 
-                return res.json(coments[0])
+                return res.json(coments)
             }
         }
         catch(error){
