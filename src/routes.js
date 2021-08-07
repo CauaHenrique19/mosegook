@@ -9,7 +9,8 @@ const UserPreferencesMediasController = require('./Controllers/UserPreferencesMe
 const AvaliationsController = require('./Controllers/AvaliationsController')
 const FollowController = require('./Controllers/FollowController')
 const ComentsController = require('./Controllers/ComentsController')
-const LikesController = require('./Controllers/LikesController')
+const LikesInAvaliationsController = require('./Controllers/LikesInAvaliationsController')
+const LikesInComentsController = require('./Controllers/LikesInComentsController')
 
 routes.post('/signup', UsersController.signup)
 routes.post('/login', UsersController.login)
@@ -62,8 +63,11 @@ routes.get('/follow-user/:user_id/:following_user_id', FollowController.followUs
 routes.post('/follow', FollowController.create)
 routes.delete('/follow/:user_id/:following_user_id', FollowController.delete)
 
-routes.post('/likes/avaliations', LikesController.createLikeAvaliations)
-routes.delete('/likes/avaliations/:id', LikesController.deleteLikeAvaliations)
-routes.get('/likes/avaliations/user/:userId/:id', LikesController.getLikeAvaliationsPerUser)
+routes.post('/likes/avaliations', LikesInAvaliationsController.createLikeAvaliations)
+routes.delete('/likes/avaliations/:id', LikesInAvaliationsController.deleteLikeAvaliations)
+routes.get('/likes/avaliations/user/:userId/:id', LikesInAvaliationsController.getLikeAvaliationsPerUser)
+
+routes.post('/likes/coments', LikesInComentsController.createLikeComents)
+routes.delete('/likes/coments/:id', LikesInComentsController.deleteLikeComents)
 
 module.exports = routes

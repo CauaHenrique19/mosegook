@@ -1,7 +1,7 @@
 const knex = require('../database/connection')
 const { formatDate } = require('../utils/formatDate')
 
-class LikesController{
+class LikesInAvaliationsController{
     async createLikeAvaliations(req, res){
         try{
             const { user_id, avaliation_id } = req.body
@@ -61,4 +61,4 @@ class LikesController{
     }
 }
 
-module.exports = new LikesController()
+module.exports = new LikesInAvaliationsController()
