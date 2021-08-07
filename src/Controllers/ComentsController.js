@@ -89,20 +89,7 @@ class ComentsController {
                     .join('categories', 'categories.id', 'medias.category_id')
                     .orderBy('coments.created_at', 'DESC')
                     .whereRaw(comentsWhereComand)
-
-                const myComents = await knex('coments')
-                    .select('coments.*', 'avaliations.media_id', 'medias.name as media_name', 'medias.category_id', 
-                            'categories.color as category_color', 'categories.name as category_name', 'categories.icon as category_icon',
-                            'users.name as user_name', 'users.user as user_user')
-                    .join('users', 'users.id', 'coments.user_id')
-                    .join('avaliations', 'avaliations.id', 'coments.avaliation_id')
-                    .join('medias', 'medias.id', 'avaliations.media_id')
-                    .join('categories', 'categories.id', 'medias.category_id')
-                    .where('coments.user_id', userId)
-                    .orderBy('coments.created_at', 'DESC')
-
-                coments.push(...myComents)
-                coments.map(coment => coment.created_at = formatDate(coment.created_at))
+                    .orWhere('avaliations.user_id', userId)
 
                 return res.json(coments)
             }
@@ -121,20 +108,7 @@ class ComentsController {
                     .join('categories', 'categories.id', 'medias.category_id')
                     .orderBy('coments.created_at', 'DESC')
                     .whereRaw(usersWhereComand)
-
-                const myComents = await knex('coments')
-                    .select('coments.*', 'avaliations.media_id', 'medias.name as media_name', 'medias.category_id', 
-                            'categories.color as category_color', 'categories.name as category_name', 'categories.icon as category_icon',
-                            'users.name as user_name', 'users.user as user_user')
-                    .join('users', 'users.id', 'coments.user_id')
-                    .join('avaliations', 'avaliations.id', 'coments.avaliation_id')
-                    .join('medias', 'medias.id', 'avaliations.media_id')
-                    .join('categories', 'categories.id', 'medias.category_id')
-                    .where('coments.user_id', userId)
-                    .orderBy('coments.created_at', 'DESC')
-
-                coments.push(...myComents)
-                coments.map(coment => coment.created_at = formatDate(coment.created_at))
+                    .orWhere('avaliations.user_id', userId)
 
                 return res.json(coments)
             }
