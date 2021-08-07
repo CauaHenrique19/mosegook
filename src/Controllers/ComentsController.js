@@ -91,7 +91,16 @@ class ComentsController {
                     .whereRaw(comentsWhereComand)
                     .orWhere('avaliations.user_id', userId)
 
-                coments.map(coment => coment.created_at = formatDate(coment.created_at))
+                for(let i = 0; i < coments.length; i++){
+                    const amountLikes = await knex('likes_in_coments')
+                        .count('coment_id')
+                        .where('coment_id', coments[i].id)
+                        .first()
+
+                    coments[i].created_at = formatDate(coments[i].created_at)
+                    coments[i].amountLikes = amountLikes.count
+                }
+
                 return res.json(coments)
             }
             else if (userFollowing.length > 0) {
@@ -111,7 +120,16 @@ class ComentsController {
                     .whereRaw(usersWhereComand)
                     .orWhere('avaliations.user_id', userId)
 
-                coments.map(coment => coment.created_at = formatDate(coment.created_at))
+                for(let i = 0; i < coments.length; i++){
+                    const amountLikes = await knex('likes_in_coments')
+                        .count('coment_id')
+                        .where('coment_id', coments[i].id)
+                        .first()
+    
+                    coments[i].created_at = formatDate(coments[i].created_at)
+                    coments[i].amountLikes = amountLikes.count
+                }
+
                 return res.json(coments)
             }
         }
