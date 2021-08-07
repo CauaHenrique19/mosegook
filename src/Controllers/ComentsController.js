@@ -18,6 +18,8 @@ class ComentsController {
             const comentDb = await knex('coments')
                 .insert(coment, '*')
 
+            comentDb.map(coment => coment.created_at = formatDate(coment.created_at))
+
             return res.json({ coment: comentDb })
         }
         catch (error) {
