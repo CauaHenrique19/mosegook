@@ -69,5 +69,6 @@ routes.get('/likes/avaliations/user/:userId/:id', LikesInAvaliationsController.g
 
 routes.post('/likes/coments', LikesInComentsController.createLikeComents)
 routes.delete('/likes/coments/:id', LikesInComentsController.deleteLikeComents)
+routes.get('/likes/coments/user/:userId/:id', LikesInAvaliationsController.getLikeAvaliationsPerUser)
 
 module.exports = routes

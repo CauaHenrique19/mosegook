@@ -23,6 +23,28 @@ class LikesInComentsController{
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao curtir', error: error.message })
         }
     }
+    async getLikeComentsPerUser(req, res){
+        try{
+            const { user_id, id } = req.params
+    
+            const like = await knex('likes_in_coments')
+                .select('*')
+                .where({ user_id })
+                .andWhere({ coment_id: id })
+                .first()
+    
+            if(like){
+                like.created_at = formatDate(like.created_at)
+                return res.json(like)
+            }
+            else{
+                return res.json({})
+            }
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao pegar curtida', error: error.message })
+        }
+    }
     deleteLikeComents(req, res){
         try{
             const { id } = req.params

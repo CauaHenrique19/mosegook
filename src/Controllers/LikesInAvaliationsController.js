@@ -27,10 +27,10 @@ class LikesInAvaliationsController{
         try{
             const { userId, id } = req.params
     
-            const like = await knex('likes_in_avaliations')
+            const like = await knex('likes_in_coments')
                 .select('*')
                 .where({ user_id: userId })
-                .andWhere({ avaliation_id: id })
+                .andWhere({ coment_id: id })
                 .first()
 
             if(like){
