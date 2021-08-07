@@ -134,6 +134,7 @@ class ComentsController {
                     .orderBy('coments.created_at', 'DESC')
 
                 coments.push(myComents)
+                console.log(myComents)
                 coments[0].map(coment => coment.created_at = formatDate(coment.created_at))
 
                 return res.json(coments[0])
