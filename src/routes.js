@@ -1,4 +1,5 @@
 const routes = require('express').Router()
+const adminMiddleware = require('./utils/adminMiddleware')
 
 const UsersController = require('./Controllers/UsersController')
 const GendersController = require('./Controllers/GendersController')
@@ -17,6 +18,7 @@ routes.post('/login', UsersController.login)
 routes.get('/users', UsersController.index)
 routes.get('/users/:user', UsersController.getUser)
 routes.get('/users/search/:search', UsersController.searchUser)
+routes.put('/users/admin', adminMiddleware(UsersController.setAdmin))
 
 routes.get('/genders', GendersController.index)
 routes.post('/genders', GendersController.create)

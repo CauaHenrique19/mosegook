@@ -141,6 +141,20 @@ class UsersControllers{
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao procurar usuários', error: error.message })
         }
     }
+    async setAdmin(req, res){
+        try{
+            const { user_id, admin } = req.body
+
+            const userDb = await knex('users')
+                .update({ admin }, ['id', 'email', 'user', 'name', 'admin', 'url_image'])
+                .where({ id: user_id })
+
+            return res.json(userDb)
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao definir admin', error: error.message })
+        }
+    }
 }
 
 module.exports = new UsersControllers()
