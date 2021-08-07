@@ -86,6 +86,12 @@ class UsersControllers{
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao logar', error: error.message })
         }
     }
+    async index(req, res){
+        const users = await knex('users')
+            .select('id', 'email', 'name', 'user', 'url_image', 'admin')
+
+        return res.json(users)
+    }
     async getUser(req, res){
         try{
             const user = req.params.user

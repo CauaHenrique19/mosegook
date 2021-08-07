@@ -14,6 +14,7 @@ const LikesInComentsController = require('./Controllers/LikesInComentsController
 
 routes.post('/signup', UsersController.signup)
 routes.post('/login', UsersController.login)
+routes.get('/users', UsersController.index)
 routes.get('/users/:user', UsersController.getUser)
 routes.get('/users/search/:search', UsersController.searchUser)
 
