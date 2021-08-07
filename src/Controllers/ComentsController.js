@@ -40,6 +40,7 @@ class ComentsController {
                 .join('medias', 'medias.id', 'avaliations.media_id')
                 .join('categories', 'categories.id', 'medias.category_id')
                 .where('users.user', user)
+                .orderBy('coments.created_at', 'DESC')
 
             comentsDB.map(coment => coment.created_at = formatDate(coment.created_at))
 
