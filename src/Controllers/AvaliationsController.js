@@ -53,8 +53,12 @@ class AvaliationsController {
             avaliationsDB.created_at = formatDate(avaliationsDB.created_at)
 
             const comentsDB = await knex('coments')
-                .select('coments.*', 'users.name', 'users.user')
+                .select('coments.*', 'users.name as user_name', 'users.user as user_user', 
+                        'categories.color as category_color', 'categories.icon as category_icon','medias.name as media_name')
                 .join('users', 'users.id', 'coments.user_id')
+                .join('avaliations', 'avaliations.id', 'coments.avaliation_id')
+                .join('medias', 'medias.id', 'avaliations.media_id')
+                .join('categories', 'categories.id', 'medias.category_id')
                 .where({ avaliation_id: id })
 
             comentsDB.map(coment => coment.created_at = formatDate(coment.created_at))
