@@ -91,6 +91,7 @@ class ComentsController {
                     .whereRaw(comentsWhereComand)
                     .orWhere('avaliations.user_id', userId)
 
+                coments.map(coment => coment.created_at = formatDate(coment.created_at))
                 return res.json(coments)
             }
             else if (userFollowing.length > 0) {
@@ -110,6 +111,7 @@ class ComentsController {
                     .whereRaw(usersWhereComand)
                     .orWhere('avaliations.user_id', userId)
 
+                coments.map(coment => coment.created_at = formatDate(coment.created_at))
                 return res.json(coments)
             }
         }
