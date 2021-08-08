@@ -155,6 +155,16 @@ class UsersControllers{
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao definir admin', error: error.message })
         }
     }
+    async statistics(req, res){
+        const [amount_users] = await knex('users')
+            .count('id as amount_users')
+
+        const [amount_admins] = await knex('users')
+            .count('id as amount_admins')
+            .where({ admin: true })
+
+        return res.json({ amount_users: amount_users.amount_users, amount_admins: amount_admins.amount_admins })
+    }
 }
 
 module.exports = new UsersControllers()
