@@ -31,7 +31,7 @@ class CategoriesController{
             .update(category, '*')
             .where({ id })
 
-        return res.json({ message: 'Categoria Atualizada com sucesso!', categoryUpdated })
+        return res.json(categoryUpdated)
     }
     delete(req, res){
         const categoryId = req.params.id
