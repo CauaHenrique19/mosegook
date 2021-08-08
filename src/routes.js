@@ -29,6 +29,7 @@ routes.put('/genders/:id', GendersController.update)
 routes.delete('/genders/:id', GendersController.delete)
 
 routes.get('/categories', CategoriesController.index)
+routes.get('/categories/statistics', CategoriesController.statistics)
 routes.post('/categories', CategoriesController.create)
 routes.put('/categories/:id', CategoriesController.update)
 routes.delete('/categories/:id', CategoriesController.delete)
