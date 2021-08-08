@@ -12,6 +12,7 @@ const FollowController = require('./Controllers/FollowController')
 const ComentsController = require('./Controllers/ComentsController')
 const LikesInAvaliationsController = require('./Controllers/LikesInAvaliationsController')
 const LikesInComentsController = require('./Controllers/LikesInComentsController')
+const SuggestionsController = require('./Controllers/SuggestionsController')
 
 routes.post('/signup', UsersController.signup)
 routes.post('/login', UsersController.login)
@@ -74,5 +75,9 @@ routes.get('/likes/avaliations/user/:userId/:id', LikesInAvaliationsController.g
 routes.post('/likes/coments', LikesInComentsController.createLikeComents)
 routes.delete('/likes/coments/:id', LikesInComentsController.deleteLikeComents)
 routes.get('/likes/coments/user/:userId/:id', LikesInAvaliationsController.getLikeAvaliationsPerUser)
+
+routes.post('/suggestions', SuggestionsController.create)
+routes.get('/suggestions', SuggestionsController.index)
+routes.put('/suggestions/:id', SuggestionsController.update)
 
 module.exports = routes
