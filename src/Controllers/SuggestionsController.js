@@ -53,7 +53,35 @@ class SuggestionsController{
             return res.json(updatedSuggestion)
         }
         catch(error){
-            return res.status(500).json({ message: 'Ocorreu um erro ao atualizar uma mídia!', error: error.message })
+            return res.status(500).json({ message: 'Ocorreu um erro ao atualizar uma sugestão!', error: error.message })
+        }
+    }
+    async statistics(req, res){
+        try{
+            const [amount_suggestions] = await knex('suggestions')
+                .count('id as amount_suggestions')
+
+            const [amount_accepted] = await knex('suggestions')
+                .count('id as amount_accepted')
+                .where({ status: "accept" })
+
+            const [amount_rejected] = await knex('suggestions')
+                .count('id as amount_rejected')
+                .where({ status: "rejected" })
+
+            const [amount_pending] = await knex('suggestions')
+                .count('id as amount_pending')
+                .where({ status: "pending" })
+
+            return res.json({ 
+                amount_suggestions: amount_suggestions.amount_suggestions, 
+                amount_accepted: amount_accepted.amount_accepted, 
+                amount_rejected: amount_rejected.amount_rejected, 
+                amount_pending: amount_pending.amount_pending 
+            })
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro ao pegar estatísticas!', error: error.message })
         }
     }
 }

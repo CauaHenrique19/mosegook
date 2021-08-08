@@ -78,6 +78,7 @@ routes.get('/likes/coments/user/:userId/:id', LikesInAvaliationsController.getLi
 
 routes.post('/suggestions', SuggestionsController.create)
 routes.get('/suggestions', SuggestionsController.index)
-routes.put('/suggestions/:id', SuggestionsController.update)
+routes.put('/suggestions/:id(\\d+)', SuggestionsController.update)
+routes.get('/suggestions/statistics', SuggestionsController.statistics)
 
 module.exports = routes
