@@ -144,7 +144,7 @@ class MediasController {
                     }).promise()
                 }) 
             }
-            return res.json({ updatedMedia })
+            return res.json(updatedMedia)
         }
         catch(error){
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao editar mídia', error: error.message })
