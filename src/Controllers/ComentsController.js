@@ -42,7 +42,14 @@ class ComentsController {
                 .where('users.user', user)
                 .orderBy('coments.created_at', 'DESC')
 
-            comentsDB.map(coment => coment.created_at = formatDate(coment.created_at))
+            for(let i = 0; i < comentsDB.length; i++){
+                const [amount_likes] = await knex('likes_in_coments')
+                    .count('coment_id as amount_likes')
+                    .where({ coment_id: comentsDB[i].id })
+    
+                comentsDB[i].created_at = formatDate(comentsDB[i].created_at)
+                comentsDB[i].amountLikes = amount_likes.amount_likes
+            }
 
             return res.json({ coments: comentsDB })
         }
