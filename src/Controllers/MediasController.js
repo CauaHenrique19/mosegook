@@ -87,7 +87,6 @@ class MediasController {
         }
     }
     async update(req, res){
-
         try{
             const mediaId = req.params.id
             const { id, name, synopsis, category_id, avaliation } = req.body
@@ -120,28 +119,23 @@ class MediasController {
                     { poster: 'key_poster' },
                     { poster_timeline: 'key_poster_timeline' }
                 ]
-    
+                  
                 const arrayFiles = Object.entries(req.files)
-    
+                
                 arrayFiles.map(async (file) => {
-    
-                    file.shift()
-    
-                    const imageName = file[0].fieldName
+                    
+                    const imageName = file[0]
                     const field = fields.find(field => field[imageName])[imageName]
                     const key = mediaInDb[field]
-    
-                    const filepath = file[0].path
-                    const mimetype = file[0].type
+                    
+                    const filepath = file[1].path
+                    const mimetype = file[1].type
                     const fileStream = fs.createReadStream(filepath);
-    
-                    const newImage = await s3.putObject({
-                        Bucket: 'mosegook',
-                        Key: key,
-                        Body: fileStream,
-                        ContentType: mimetype,
-                        ACL: 'public-read'
-                    }).promise()
+                    
+                    const result = await s3.putObject({Bucket: 'mosegook',Key: key,Body: fileStream, ContentType: mimetype, ACL: 'public-read'})
+                        .promise()
+                    
+                    console.log(result)
                 }) 
             }
             return res.json(updatedMedia)
