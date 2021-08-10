@@ -38,7 +38,7 @@ class MediasController {
                 .insert(media, '*')
     
             const objectsToInsert = genders.map(genderId => ({gender_id: genderId, media_id: mediaDB[0].id }))
-    
+
             const gendersInMediaInDb = await knex('genders_in_medias')
                 .insert(objectsToInsert, 'gender_id')
     
@@ -55,7 +55,6 @@ class MediasController {
     
             mediaDB[0].genders = gendersDB
             res.json(mediaDB)
-            
         }
         catch(error){
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao criar mídia', error: error.message })
@@ -107,13 +106,22 @@ class MediasController {
                 .update(media, '*')
                 .where({ id: mediaId })
     
-            const gendersToInsert = genders.map(gender => ({ gender_id: gender.id, media_id: mediaId }))
+            const gendersToInsert = genders.map(genderId => ({gender_id: genderId, media_id: mediaId }))
 
             const gendersUpdated =  await knex('genders_in_medias')
-                .insert(gendersToInsert, '*')
-               
+                .insert(gendersToInsert, ['media_id', 'gender_id'])
+
+            for(let i = 0; i < gendersUpdated.length; i++){
+                const gender = await knex('genders')
+                    .select('name', 'color')
+                    .where({ id: gendersUpdated[i].gender_id })
+                    .first()
+
+                gendersUpdated[i] = {...gendersUpdated[i], ...gender}
+            }
+            
             updatedMedia[0].genders = gendersUpdated
-       
+
             if(req.files){
                 const fields = [
                     { poster: 'key_poster' },
