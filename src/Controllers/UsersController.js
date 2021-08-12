@@ -92,6 +92,29 @@ class UsersControllers{
 
         return res.json(users)
     }
+    async update(req, res){
+        try{
+            const id = req.params.id
+            const { name, biography } = req.body
+    
+            const [key_image_user] = await knex('users')
+                .update({ name, biography }, 'key_image_user')
+                .where({ id })
+    
+            const fileStream = fs.createReadStream(req.files.image.path)
+            const mimetype = req.files.image.type
+    
+            const result = await s3.putObject({Bucket: 'mosegook', Key: key_image_user, Body: fileStream, ContentType: mimetype, ACL: 'public-read'})
+                .promise()
+    
+            console.log(result)
+            
+            return res.json({ id, name, biography })
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao editar usuário!', error: error.message })
+        }
+    }
     async getUser(req, res){
         try{
             const user = req.params.user

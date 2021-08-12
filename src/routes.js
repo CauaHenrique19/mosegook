@@ -22,6 +22,7 @@ routes.get('/users/user/:user', UsersController.getUser)
 routes.get('/users/search/:search', UsersController.searchUser)
 routes.get('/users/statistics', UsersController.statistics)
 routes.put('/users/admin', adminMiddleware(UsersController.setAdmin))
+routes.put('/users/:id', UsersController.update)
 
 routes.get('/genders', GendersController.index)
 routes.post('/genders', GendersController.create)
