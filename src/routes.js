@@ -69,6 +69,7 @@ routes.delete('/coments/:id', ComentsController.delete)
 
 routes.get('/users-to-follow/:id', FollowController.usersToFollow)
 routes.get('/follow-user/:user_id/:following_user_id', FollowController.followUser)
+routes.get('/user-follow/:user_id/:follower_id', FollowController.userFollow)
 routes.post('/follow', FollowController.create)
 routes.delete('/follow/:user_id/:following_user_id', FollowController.delete)
 

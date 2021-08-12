@@ -1,5 +1,4 @@
 const knex = require("../database/connection")
-const { formatDate } = require("../utils/formatDate")
 
 class FollowController{
     async create(req, res){
@@ -44,6 +43,20 @@ class FollowController{
             const follow = await knex('follow')
                 .select('*')
                 .where({ user_id, following_user_id })
+            
+            return res.json({ follow: follow.length > 0 ? true : false })
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao verificar se segue usuário', error: error.message })
+        }
+    }
+    async userFollow(req, res){
+        try{
+            const { user_id, follower_id } = req.params
+    
+            const follow = await knex('follow')
+                .select('*')
+                .where({ user_id: follower_id, following_user_id: user_id })
             
             return res.json({ follow: follow.length > 0 ? true : false })
         }
