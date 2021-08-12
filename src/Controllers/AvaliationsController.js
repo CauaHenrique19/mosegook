@@ -146,6 +146,16 @@ class AvaliationsController {
 
                 avaliationsTimeline.rows.push(...myAvaliations)
 
+                avaliationsTimeline.rows.sort((a, b) => {
+                    if (a.created_at < b.created_at) {
+                        return 1;
+                    }
+                    if (a.created_at > b.created_at) {
+                        return -1;
+                    }
+                    return 0
+                })
+
                 for (let i = 0; i < avaliationsTimeline.rows.length; i++) {
 
                     const amountComents = await knex('coments')
@@ -163,16 +173,6 @@ class AvaliationsController {
                     avaliationsTimeline.rows[i].amountLikes = amountLikes.count
                 }
 
-                avaliationsTimeline.rows.sort((a, b) => {
-                    if (a.created_at < b.created_at) {
-                        return 1;
-                    }
-                    if (a.created_at > b.created_at) {
-                        return -1;
-                    }
-                    return 0
-                })
-                
                 return res.json({ avaliations: avaliationsTimeline.rows })
             }
             else {
@@ -207,6 +207,16 @@ class AvaliationsController {
 
                 avaliationsTimeline.rows.push(...myAvaliations)
 
+                avaliationsTimeline.rows.sort((a, b) => {
+                    if (a.created_at < b.created_at) {
+                        return 1;
+                    }
+                    if (a.created_at > b.created_at) {
+                        return -1;
+                    }
+                    return 0
+                })
+
                 for (let i = 0; i < avaliationsTimeline.rows.length; i++) {
                     const amountComents = await knex('coments')
                         .count('avaliation_id')
@@ -222,16 +232,6 @@ class AvaliationsController {
                     avaliationsTimeline.rows[i].amountComents = amountComents.count
                     avaliationsTimeline.rows[i].amountLikes = amountLikes.count
                 }
-
-                avaliationsTimeline.rows.sort((a, b) => {
-                    if (a.created_at < b.created_at) {
-                        return 1;
-                    }
-                    if (a.created_at > b.created_at) {
-                        return -1;
-                    }
-                    return 0
-                })
 
                 return res.json({ avaliations: avaliationsTimeline.rows })
             }
