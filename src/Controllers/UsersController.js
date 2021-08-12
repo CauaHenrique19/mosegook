@@ -101,19 +101,21 @@ class UsersControllers{
         try{
             const id = req.params.id
             const { name, biography } = req.body
+
+            if(req.files.image){
+                const [key_image_user] = await knex('users')
+                    .update({ name, biography }, 'key_image_user')
+                    .where({ id })
+        
+                const fileStream = fs.createReadStream(req.files.image.path)
+                const mimetype = req.files.image.type
+        
+                const result = await s3.putObject({Bucket: 'mosegook', Key: key_image_user, Body: fileStream, ContentType: mimetype, ACL: 'public-read'})
+                    .promise()
+        
+                console.log(result)
+            }
     
-            const [key_image_user] = await knex('users')
-                .update({ name, biography }, 'key_image_user')
-                .where({ id })
-    
-            const fileStream = fs.createReadStream(req.files.image.path)
-            const mimetype = req.files.image.type
-    
-            const result = await s3.putObject({Bucket: 'mosegook', Key: key_image_user, Body: fileStream, ContentType: mimetype, ACL: 'public-read'})
-                .promise()
-    
-            console.log(result)
-            
             return res.json({ id, name, biography })
         }
         catch(error){
