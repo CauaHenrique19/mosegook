@@ -102,11 +102,11 @@ class UsersControllers{
             const id = req.params.id
             const { name, biography } = req.body
 
+            const [key_image_user] = await knex('users')
+                .update({ name, biography }, 'key_image_user')
+                .where({ id })
+
             if(req.files.image){
-                const [key_image_user] = await knex('users')
-                    .update({ name, biography }, 'key_image_user')
-                    .where({ id })
-        
                 const fileStream = fs.createReadStream(req.files.image.path)
                 const mimetype = req.files.image.type
         
