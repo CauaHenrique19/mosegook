@@ -87,10 +87,15 @@ class UsersControllers{
         }
     }
     async index(req, res){
-        const users = await knex('users')
-            .select('id', 'email', 'name', 'user', 'url_image', 'admin')
-
-        return res.json(users)
+        try{
+            const users = await knex('users')
+                .select('id', 'email', 'name', 'user', 'url_image', 'admin')
+    
+            return res.json(users)
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao pegar usuários', error: error.message })
+        }
     }
     async update(req, res){
         try{
@@ -120,7 +125,7 @@ class UsersControllers{
             const user = req.params.user
     
             const userDB = await knex('users')
-                .select('id', 'name', 'user', 'key_image_user', 'url_image')
+                .select('id', 'name', 'user', 'key_image_user', 'url_image', 'biography')
                 .where({ user })
                 .first()
     
