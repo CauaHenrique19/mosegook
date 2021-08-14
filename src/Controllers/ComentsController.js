@@ -31,7 +31,7 @@ class ComentsController {
             const user = req.params.user
 
             const comentsDB = await knex('coments')
-                .select('coments.id', 'coments.avaliation_id', 'coments.content',
+                .select('coments.user_id', 'coments.id', 'coments.avaliation_id', 'coments.content',
                     'coments.created_at', 'medias.name as media_name', 'categories.name as category_name',
                     'categories.color as category_color', 'categories.icon as category_icon', 'users.user as user_user',
                     'users.name as user_name')
