@@ -144,15 +144,19 @@ class ComentsController {
             return res.status(500).json({ message: 'Ocorreu um erro inesperado!', error: error.message })
         }
     }
-    delete(req, res) {
+    async delete(req, res) {
         try {
             const id = req.params.id
+            
+            await knex('likes_in_coments')
+                .delete()
+                .where({ coment_id: id })
 
-            knex('coments')
+            await knex('coments')
                 .delete()
                 .where({ id })
-                .then(_ => res.json({ message: 'Comentário Excluído com Sucesso!' }))
-                .catch(error => res.json({ message: 'Erro ao tentar excluir comentário', error: error.message }))
+                
+            return res.json({ message: 'Comentário excluído com sucesso!' })
         }
         catch (error) {
             return res.status(500).json({ message: 'Ocorreu um erro inesperado!', error: error.message })
