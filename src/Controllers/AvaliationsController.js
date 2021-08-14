@@ -73,7 +73,14 @@ class AvaliationsController {
                 .orderBy('coments.created_at', 'DESC')
                 .where({ avaliation_id: id })
 
-            comentsDB.map(coment => coment.created_at = formatDate(coment.created_at))
+            for(let i = 0; i < comentsDB.length; i++){
+                const [amountLikesInComents] = await knex('likes_in_coments')
+                    .count('coment_id as amount_likes')
+                    .where({ coment_id: comentsDB[i].id })
+                    
+                comentsDB[i].created_at = formatDate(comentsDB[i].created_at)
+                comentsDB[i].amountLikes = amountLikesInComents.amount_likes
+            }
 
             const genders = await knex('genders_in_medias')
                 .select('genders_in_medias.id', 'genders.color', 'genders.name')
