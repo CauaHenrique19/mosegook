@@ -52,6 +52,17 @@ class AvaliationsController {
 
             avaliationsDB.created_at = formatDate(avaliationsDB.created_at)
 
+            const [amountLikes] = await knex('likes_in_avaliations')
+                .count('avaliation_id as amount_likes')
+                .where({ avaliation_id: id })
+
+            const [amountComents] = await knex('coments')
+                .count('avaliation_id as amount_coments')
+                .where({ avaliation_id: id })
+
+            avaliationsDB.amountLikes = amountLikes.amount_likes
+            avaliationsDB.amountComents = amountComents.amount_coments
+
             const comentsDB = await knex('coments')
                 .select('coments.*', 'users.name as user_name', 'users.user as user_user', 
                         'categories.color as category_color', 'categories.icon as category_icon','medias.name as media_name')
