@@ -292,15 +292,33 @@ class AvaliationsController {
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao pegar avaliação de usuário', error: error.message })
         }
     }
-    delete(req, res) {
+    async delete(req, res) {
         try {
             const avaliation_id = req.params.id
 
-            knex('avaliations')
+            const coments = await knex('coments')
+                .select('id')
+                .where({ avaliation_id })
+
+            for(let i = 0; i < coments.length; i++){
+                await knex('likes_in_coments')
+                    .delete()
+                    .where({ coment_id: coments[i].id })
+            }
+            
+            await knex('coments')
+                .delete()
+                .where({ avaliation_id })
+
+            await knex('likes_in_avaliations')
+                .delete()
+                .where({ avaliation_id })
+
+            await knex('avaliations')
                 .delete()
                 .where({ id: avaliation_id })
-                .then(_ => res.json({ message: 'Avaliação excluída com sucesso!' }))
-                .catch(error => res.status(500).json({ message: 'Ocorreu um erro inesperado ao tentar excluir avaliação', error: error.message }))
+
+            res.json({ message: 'Avaliação excluída com sucesso!' })
         }
         catch (error) {
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao excluir avaliação', error: error.message })
