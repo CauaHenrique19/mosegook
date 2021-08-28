@@ -14,6 +14,7 @@ const LikesInAvaliationsController = require('./Controllers/LikesInAvaliationsCo
 const LikesInComentsController = require('./Controllers/LikesInComentsController')
 const SuggestionsController = require('./Controllers/SuggestionsController')
 const OpinionsController = require('./Controllers/OpinionsController')
+const RanksController = require('./Controllers/RanksController')
 
 routes.post('/signup', UsersController.signup)
 routes.post('/login', UsersController.login)
@@ -88,5 +89,9 @@ routes.get('/suggestions/statistics', SuggestionsController.statistics)
 
 routes.post('/opinions', OpinionsController.create)
 routes.get('/opinions', OpinionsController.index)
+
+routes.get('/ranks', RanksController.index)
+routes.post('/ranks', RanksController.create)
+routes.put('/ranks/:id', RanksController.update)
 
 module.exports = routes
