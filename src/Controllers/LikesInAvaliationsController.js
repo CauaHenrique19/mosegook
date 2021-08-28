@@ -17,6 +17,25 @@ class LikesInAvaliationsController{
 
             likeDb.map(like => like.created_at = formatDate(like.created_at))
 
+            const avaliation_user_id = await knex('avaliations')
+                .select('user_id')
+                .where({ id: avaliation_id })
+                .first()
+
+            if(avaliation_user_id.user_id !== user_id){
+                const point = {
+                    user_id: avaliation_user_id.user_id,
+                    quantity: 4,
+                    action_description: 'like_in_avaliations',
+                    action_id: likeDb[0].id,
+                    action_table: 'likes_in_avaliations',
+                    created_at: new Date()
+                }
+    
+                await knex('points')
+                    .insert(point)
+            }
+
             return res.json(likeDb)
         }
         catch(error){
@@ -45,9 +64,13 @@ class LikesInAvaliationsController{
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao pegar curtida', error: error.message })
         }
     }
-    deleteLikeAvaliations(req, res){
+    async deleteLikeAvaliations(req, res){
         try{
             const { id } = req.params
+
+            await knex('points')
+                .delete()
+                .where({ action_table: 'likes_in_avaliations', action_id: id })
 
             knex('likes_in_avaliations')
                 .delete()

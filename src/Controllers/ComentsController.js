@@ -20,6 +20,28 @@ class ComentsController {
 
             comentDb.map(coment => coment.created_at = formatDate(coment.created_at))
 
+            const avaliation_user_id = await knex('avaliations')
+                .select('user_id')
+                .where({ user_id, id: avaliation_id })
+                .first()
+
+            if(avaliation_user_id === undefined){
+                const point = {
+                    user_id,
+                    quantity: 2,
+                    action_description: 'coment',
+                    action_id: comentDb[0].id,
+                    action_table: 'coments',
+                    created_at: new Date()
+                }
+
+                const pointDb = await knex('points')
+                    .insert(point, '*')
+
+                pointDb.map(point => point.created_at = formatDate(point.created_at))
+                return res.json({ coment: comentDb[0], point: pointDb[0] })     
+            }
+
             return res.json({ coment: comentDb })
         }
         catch (error) {
@@ -155,6 +177,10 @@ class ComentsController {
             await knex('coments')
                 .delete()
                 .where({ id })
+
+            await knex('points')
+                .delete()
+                .where({ action_table: 'coments', action_id: id })
                 
             return res.json({ message: 'Comentário excluído com sucesso!' })
         }

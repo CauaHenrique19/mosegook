@@ -110,9 +110,24 @@ class AvaliationsController {
 
             avaliationsDB.map(avaliation => avaliation.created_at = formatDate(avaliation.created_at))
 
-            return res.json(avaliationsDB)
+            const point = {
+                user_id,
+                quantity: 2,
+                action_description: 'avaliation',
+                action_id: avaliationsDB[0].id,
+                action_table: 'avaliations',
+                created_at: new Date()
+            }
+
+            const pointDb = await knex('points')
+                .insert(point, '*')
+
+            pointDb.map(point => point.created_at = formatDate(point.created_at))
+
+            return res.json({ avaliation: avaliationsDB[0], point: pointDb[0] })
         }
         catch (error) {
+            await trx.rollback()
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao avaliar', error: error.message })
         }
     }
@@ -317,6 +332,10 @@ class AvaliationsController {
             await knex('avaliations')
                 .delete()
                 .where({ id: avaliation_id })
+
+            await knex('points')
+                .delete()
+                .where({ action_table: 'avaliations', action_id: avaliation_id })
 
             res.json({ message: 'Avaliação excluída com sucesso!' })
         }
