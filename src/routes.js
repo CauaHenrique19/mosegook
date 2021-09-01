@@ -89,6 +89,7 @@ routes.get('/suggestions/statistics', SuggestionsController.statistics)
 
 routes.post('/opinions', OpinionsController.create)
 routes.get('/opinions', OpinionsController.index)
+routes.get('/opinions-home', OpinionsController.opinionsHome)
 
 routes.get('/ranks', RanksController.index)
 routes.post('/ranks', RanksController.create)
