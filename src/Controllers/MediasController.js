@@ -314,14 +314,14 @@ class MediasController {
         try{
             const medias = await knex.raw(`
                 select 
-                    media_id,
+                    medias.id,
                     to_char(avg(stars), 'FM999999999.0') as average,
                     medias.name,
                     medias.url_poster
                 from avaliations
                 inner join medias on medias.id = avaliations.media_id
                 group by 
-                    media_id, 
+                    medias.id, 
                     medias.name, 
                     medias.url_poster
                 order by average DESC
