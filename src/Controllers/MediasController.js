@@ -376,12 +376,18 @@ class MediasController {
                 avaliations[i].amountComents = amount_coments
             }
     
-            const relationedMedias = await knex('genders_in_medias')
-                .select('medias.id', 'name', 'url_poster')
-                .join('medias', 'medias.id', 'media_id')
-                .whereRaw(gendersWhereString)
-                .orderBy('media_id')
-    
+            const { rows: relationedMedias } = await knex.raw(`
+                select distinct on (media_id)
+                    media_id,
+                    gender_id,
+                    name,
+                    url_poster
+                from genders_in_medias
+                inner join medias on medias.id = media_id
+                where ${gendersWhereString}
+                order by media_id;
+            `)
+
             const mediaDetailed = {
                 media: mediaDb,
                 avaliations: {
