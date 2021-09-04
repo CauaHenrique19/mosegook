@@ -385,8 +385,8 @@ class MediasController {
             const mediaDetailed = {
                 media: mediaDb,
                 avaliations: {
-                    first_row: avaliations.slice(0, 4),
-                    second_row: avaliations.slice(4, 8)
+                    first_row: avaliations.slice(0, 3),
+                    second_row: avaliations.slice(3, 6)
                 },
                 relationedMedias
             }
