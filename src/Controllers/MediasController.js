@@ -377,7 +377,7 @@ class MediasController {
             }
     
             const relationedMedias = await knex('genders_in_medias')
-                .select('media_id', 'gender_id', 'name', 'url_poster')
+                .select('medias.id', 'name', 'url_poster')
                 .join('medias', 'medias.id', 'media_id')
                 .whereRaw(gendersWhereString)
                 .orderBy('media_id')
