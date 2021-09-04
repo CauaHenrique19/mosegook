@@ -2,6 +2,7 @@ const knex = require('../database/connection')
 const crypto = require('crypto')
 const fs = require('fs')
 const aws = require('aws-sdk')
+const { formatDate } = require('../utils/formatDate')
 
 const s3 = new aws.S3()
 
@@ -330,6 +331,70 @@ class MediasController {
         }
         catch(error){
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao buscar mídias mais bem avaliadas', error: error.message })
+        }
+    }
+    async detailed(req, res){
+        try{
+            const id = req.params.id
+    
+            const mediaDb = await knex('medias')
+                .select('id', 'name', 'url_poster', 'url_poster_timeline', 'avaliation', 'synopsis')
+                .where({ id })
+                .first()
+    
+            const genders = await knex('genders_in_medias')
+                .select('gender_id')
+                .where({ media_id: id })
+                
+            const gendersWhereString = genders
+                .map((gender, index) => index === 0 ? `gender_id = ${gender.gender_id}` : ` or gender_id = ${gender.gender_id}`)
+                .join('')
+    
+            const avaliations = await knex('likes_in_avaliations')
+                .select('avaliation_id', 'avaliations.content', 'avaliations.created_at',
+                        'avaliations.user_id', 'avaliations.media_id', 'medias.name as media_name', 
+                        'users.user', 'users.name', 'categories.color as category_color', 'categories.icon as category_icon')
+                .count('avaliation_id as amount_likes')
+                .join('avaliations', 'avaliations.id', 'avaliation_id')
+                .join('medias', 'medias.id', 'avaliations.media_id')
+                .join('users', 'users.id', 'avaliations.user_id')
+                .join('categories', 'categories.id', 'medias.category_id')
+                .where('medias.id', id)
+                .groupBy('avaliation_id', 'avaliations.content', 'avaliations.created_at', 
+                        'avaliations.user_id', 'avaliations.media_id', 'media_name',
+                        'users.user', 'users.name', 'category_color', 'category_icon')
+                .orderBy('amount_likes', 'DESC')
+                .limit(6)
+    
+            for(let i = 0; i < avaliations.length; i++){
+                const { count: amount_coments } = await knex('coments')
+                    .count('avaliation_id')
+                    .where({ avaliation_id: avaliations[i].avaliation_id })
+                    .first()
+    
+                avaliations[i].created_at = formatDate(avaliations[i].created_at)
+                avaliations[i].amount_coments = amount_coments
+            }
+    
+            const relationedMedias = await knex('genders_in_medias')
+                .select('media_id', 'gender_id', 'name', 'url_poster')
+                .join('medias', 'medias.id', 'media_id')
+                .whereRaw(gendersWhereString)
+                .orderBy('media_id')
+    
+            const mediaDetailed = {
+                media: mediaDb,
+                avaliations: {
+                    first_row: avaliations.slice(0, 4),
+                    second_row: avaliations.slice(4, 8)
+                },
+                relationedMedias
+            }
+    
+            res.json(mediaDetailed)
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao buscar mídia detalhada', error: error.message })
         }
     }
     async search(req, res){
