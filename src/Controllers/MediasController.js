@@ -353,8 +353,8 @@ class MediasController {
             const avaliations = await knex('likes_in_avaliations')
                 .select('avaliation_id', 'avaliations.content', 'avaliations.created_at',
                         'avaliations.user_id', 'avaliations.media_id', 'medias.name as media_name', 
-                        'users.user', 'users.name', 'categories.color as category_color', 'categories.icon as category_icon')
-                .count('avaliation_id as amount_likes')
+                        'users.user as user_user', 'users.name as user_name', 'categories.color as category_color', 'categories.icon as category_icon')
+                .count('avaliation_id as amountLikes')
                 .join('avaliations', 'avaliations.id', 'avaliation_id')
                 .join('medias', 'medias.id', 'avaliations.media_id')
                 .join('users', 'users.id', 'avaliations.user_id')
@@ -362,8 +362,8 @@ class MediasController {
                 .where('medias.id', id)
                 .groupBy('avaliation_id', 'avaliations.content', 'avaliations.created_at', 
                         'avaliations.user_id', 'avaliations.media_id', 'media_name',
-                        'users.user', 'users.name', 'category_color', 'category_icon')
-                .orderBy('amount_likes', 'DESC')
+                        'user_user', 'user_name', 'category_color', 'category_icon')
+                .orderBy('amountLikes', 'DESC')
                 .limit(6)
     
             for(let i = 0; i < avaliations.length; i++){
@@ -373,7 +373,7 @@ class MediasController {
                     .first()
     
                 avaliations[i].created_at = formatDate(avaliations[i].created_at)
-                avaliations[i].amount_coments = amount_coments
+                avaliations[i].amountComents = amount_coments
             }
     
             const relationedMedias = await knex('genders_in_medias')
