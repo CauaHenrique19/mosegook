@@ -347,7 +347,7 @@ class MediasController {
                 .where({ media_id: id })
                 
             const gendersWhereString = genders
-                .map((gender, index) => index === 0 ? `gender_id = ${gender.gender_id}` : ` or gender_id = ${gender.gender_id}`)
+                .map((gender, index) => index === 0 ? `gender_id = ${gender.gender_id}` : ` and gender_id = ${gender.gender_id}`)
                 .join('')
     
             const avaliations = await knex('likes_in_avaliations')
@@ -384,7 +384,7 @@ class MediasController {
                     url_poster
                 from genders_in_medias
                 inner join medias on medias.id = media_id
-                where ${gendersWhereString}
+                where ${gendersWhereString} or media_id != ${id}
                 order by media_id;
             `)
 
