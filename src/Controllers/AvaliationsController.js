@@ -87,7 +87,17 @@ class AvaliationsController {
                 .join('genders', 'genders.id', 'genders_in_medias.gender_id')
                 .where({ media_id: avaliationsDB.media_id })
 
-            return res.json({ avaliation: avaliationsDB, coments: comentsDB, genders })
+            const media = {
+                id: avaliationsDB.media_id,
+                url_poster: avaliationsDB.url_poster,
+                media_name: avaliationsDB.media_name 
+            }
+
+            delete avaliationsDB.media_id 
+            delete avaliationsDB.url_poster 
+            delete avaliationsDB.media_name 
+
+            return res.json({ avaliation: avaliationsDB, media, coments: comentsDB, genders })
         }
         catch (error) {
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao pegar avaliação detalhada', error: error.message })
