@@ -22,6 +22,7 @@ routes.get('/users', UsersController.index)
 routes.get('/users/user/:user', UsersController.getUser)
 routes.get('/users/search/:search', UsersController.searchUser)
 routes.get('/users/statistics', UsersController.statistics)
+routes.get('/users/rank/:id', UsersController.rankStatus)
 routes.put('/users/admin', adminMiddleware(UsersController.setAdmin))
 routes.put('/users/:id', UsersController.update)
 
