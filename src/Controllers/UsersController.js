@@ -186,35 +186,45 @@ class UsersControllers{
         }
     }
     async rankStatus(req, res){
-        const id = req.params.id
-
-        const [{ points }] = await knex('points')
-            .sum('quantity as points')
-            .where({ user_id: id })
-
-        const rank = await knex('ranks')
-            .select('id', 'name', 'color', 'value_to_up')
-            .whereRaw(`${points} between value_to_enter and value_to_up`)
-            .first()
-
-        const [nextRank] = await knex('ranks')
-            .select('*')
-            .whereRaw(`value_to_enter > ${rank.value_to_up}`)
-            .limit(1)
-
-        const percentualToNextRank = parseInt((points * 100) / nextRank.value_to_enter)
-
-        return res.json({ points, rank, percentualToNextRank: `${percentualToNextRank}%`, nextRank })
+        try{
+            const id = req.params.id
+    
+            const [{ points }] = await knex('points')
+                .sum('quantity as points')
+                .where({ user_id: id })
+    
+            const rank = await knex('ranks')
+                .select('id', 'name', 'color', 'value_to_up')
+                .whereRaw(`${points} between value_to_enter and value_to_up`)
+                .first()
+    
+            const [nextRank] = await knex('ranks')
+                .select('*')
+                .whereRaw(`value_to_enter > ${rank.value_to_up}`)
+                .limit(1)
+    
+            const percentualToNextRank = parseInt((points * 100) / nextRank.value_to_enter)
+    
+            return res.json({ points, rank, percentualToNextRank: `${percentualToNextRank}%`, nextRank })
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao buscar status de rank', error: error.message })
+        }
     }
     async statistics(req, res){
-        const [amount_users] = await knex('users')
-            .count('id as amount_users')
-
-        const [amount_admins] = await knex('users')
-            .count('id as amount_admins')
-            .where({ admin: true })
-
-        return res.json({ amount_users: amount_users.amount_users, amount_admins: amount_admins.amount_admins })
+        try{
+            const [amount_users] = await knex('users')
+                .count('id as amount_users')
+    
+            const [amount_admins] = await knex('users')
+                .count('id as amount_admins')
+                .where({ admin: true })
+    
+            return res.json({ amount_users: amount_users.amount_users, amount_admins: amount_admins.amount_admins })
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao buscar estatísticas de usuários', error: error.message })
+        }
     }
 }
 
