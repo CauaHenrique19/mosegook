@@ -93,6 +93,7 @@ routes.get('/opinions', OpinionsController.index)
 routes.get('/opinions-home', OpinionsController.opinionsHome)
 
 routes.get('/ranks', RanksController.index)
+routes.get('/ranks/top', RanksController.top)
 routes.post('/ranks', RanksController.create)
 routes.put('/ranks/:id', RanksController.update)
 
