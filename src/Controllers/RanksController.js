@@ -52,12 +52,19 @@ class RanksController{
                 .groupBy('user_id', 'user_name', 'user_user', 'users.url_image')
                 .orderBy('points', 'DESC')
                 .limit(3)
+            
+            const positions = {
+                1: 'first',
+                2: 'second',
+                3: 'third'
+            }
 
             for(let i = 0; i < users.length; i++){
                 const rank = await knex('ranks')
                     .select('id', 'name', 'color')
                     .whereRaw(`${users[i].points} between value_to_enter and value_to_up`)
 
+                users[i].position = positions[i+1]
                 users[i].rank = rank
             }
 
