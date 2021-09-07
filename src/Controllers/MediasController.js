@@ -343,7 +343,8 @@ class MediasController {
                 .first()
     
             const genders = await knex('genders_in_medias')
-                .select('gender_id')
+                .select('gender_id', 'genders.name', 'genders.color')
+                .join('genders', 'genders.id', 'gender_id')
                 .where({ media_id: id })
                 
             const gendersWhereString = genders
@@ -395,6 +396,7 @@ class MediasController {
 
             const mediaDetailed = {
                 media: mediaDb,
+                genders,
                 avaliations: {
                     first_row: avaliations.slice(0, 3),
                     second_row: avaliations.slice(3, 6)
