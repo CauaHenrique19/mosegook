@@ -40,13 +40,11 @@ class UserPreferencesMediasController{
         try{
             const id = req.params.id
             const medias = req.body.medias_id
-            
-            for(const mediasIndex in medias){
-                await knex('user_preferences_medias')
-                    .delete()
-                    .where({ user_id: id })
-            }
 
+            await knex('user_preferences_medias')
+                .delete()
+                .where({ user_id: id })
+            
             const mediasToInsert = medias.map(mediaId => ({ user_id: id, media_id: mediaId }))
     
             const userPreferencesMediasDb = await knex('user_preferences_medias')
