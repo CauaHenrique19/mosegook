@@ -56,6 +56,7 @@ routes.delete('/user-preferences-genders/:id', UserPreferencesGendersController.
 
 routes.get('/user-preferences-medias', UserPreferencesMediasController.index)
 routes.post('/user-preferences-medias', UserPreferencesMediasController.create)
+routes.put('/user-preferences-medias/:id', UserPreferencesMediasController.update)
 routes.delete('/user-preferences-medias/:id', UserPreferencesMediasController.delete)
 
 routes.get('/avaliations', AvaliationsController.index)

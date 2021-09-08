@@ -36,6 +36,28 @@ class UserPreferencesMediasController{
             return res.status(500).json({ message: 'Ocorreu um erro ao pegar preferencias por mídias', error: error.message })
         }
     }
+    async update(req, res){
+        try{
+            const id = req.params.id
+            const medias = req.body.medias_id
+            
+            for(const mediasIndex in medias){
+                await knex('user_preferences_medias')
+                    .delete()
+                    .where({ user_id: id })
+            }
+
+            const mediasToInsert = medias.map(mediaId => ({ user_id: id, media_id: mediaId }))
+    
+            const userPreferencesMediasDb = await knex('user_preferences_medias')
+                .insert(mediasToInsert, '*')
+                
+            res.json(userPreferencesMediasDb)
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro ao atualizar preferencias por mídias', error: error.message })
+        }
+    }
     delete(req, res){
         try{
             const userPreferenceId = req.params.id
