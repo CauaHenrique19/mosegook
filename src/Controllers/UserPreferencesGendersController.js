@@ -36,6 +36,26 @@ class UserPreferencesGendersController{
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao pegar preferências por gêneros', error: error.message })
         }
     }
+    async update(req, res){
+        try{
+            const id = req.params.id
+            const genders = req.body.genders_id
+    
+            await knex('user_preferences_genders')
+                .delete()
+                .where({ user_id: id })
+    
+            const gendersToInsert = genders.map(genderId => ({ user_id: id, gender_id: genderId }))
+        
+            const userPreferencesGendersDb = await knex('user_preferences_genders')
+                .insert(gendersToInsert, '*')
+                    
+            res.json(userPreferencesGendersDb)
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro inesperado ao atualizar preferências por gêneros', error: error.message })
+        }
+    }
     async delete(req, res){
         try{
             const userPreferenceId = req.params.id

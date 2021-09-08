@@ -52,6 +52,7 @@ routes.delete('/medias/:id', MediasController.delete)
 
 routes.get('/user-preferences-genders', UserPreferencesGendersController.index)
 routes.post('/user-preferences-genders', UserPreferencesGendersController.create)
+routes.put('/user-preferences-genders/:id', UserPreferencesGendersController.update)
 routes.delete('/user-preferences-genders/:id', UserPreferencesGendersController.delete)
 
 routes.get('/user-preferences-medias', UserPreferencesMediasController.index)
