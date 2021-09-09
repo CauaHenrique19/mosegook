@@ -72,6 +72,20 @@ class GendersControllers{
             return res.status(500).json({ message: 'Ocorreu um erro ao pegar estatísticas', error: error.message })
         }
     }
+    async search(req, res){
+        try{
+            const search = req.params.search.toLowerCase()
+    
+            const genders = await knex('genders')
+                .select('*')
+                .whereRaw(`lower(genders.name) like '%${search}%'`)
+
+            res.json(genders)
+        }
+        catch(error){
+            return res.status(500).json({ message: 'Ocorreu um erro ao buscar gêneros', error: error.message })
+        }
+    }
     async delete(req, res){
         try{
             const genderId = req.params.id
