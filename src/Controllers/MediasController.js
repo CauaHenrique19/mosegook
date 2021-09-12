@@ -414,14 +414,11 @@ class MediasController {
         try{
             const search = req.params.search.toLowerCase()
 
-            const { rows: medias } = await knex
-                .raw(`
-                    select 
-                        medias.id, medias.name, medias.url_poster, 
-                        medias.url_poster_timeline, categories.color, categories.icon
-                    from medias
-                    inner join categories on categories.id = medias.category_id
-                    where lower(medias.name) like '%${search}%';`)
+            const medias = await knex('medias')
+                .select('medias.id', 'medias.name', 'medias.url_poster',
+                        'medias.url_poster_timeline', 'categories.color', 'categories.icon')
+                .join('categories', 'categories.id', 'medias.category_id')
+                .whereRaw(`lower(medias.name) like '%${search}%'`)
     
             for(let i = 0; i < medias.length; i++){
                 const gendersOfMedia = await knex('genders_in_medias')
@@ -432,7 +429,7 @@ class MediasController {
                 medias[i].genders = gendersOfMedia
             }
     
-            return res.json({ medias })
+            return res.json(medias)
         }
         catch(error){
             return res.status(500).json({ message: 'Ocorreu um erro inesperado ao buscar mídias pelo nome', error: error.message })
