@@ -29,7 +29,7 @@ routes.put('/users/:id', UsersController.update)
 routes.get('/genders', GendersController.index)
 routes.get('/genders/:search', GendersController.search)
 routes.post('/genders', GendersController.create)
-routes.get('/genders/statistics', GendersController.statistics)
+routes.get('/genders-statistics', GendersController.statistics)
 routes.put('/genders/:id', GendersController.update)
 routes.delete('/genders/:id', GendersController.delete)
 

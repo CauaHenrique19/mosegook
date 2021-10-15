@@ -13,8 +13,4 @@ app.use((req, res, next) => {
 })
 app.use(require('./routes'))
 
-setInterval(() => {
-    console.log('Anti Dormida!')
-}, 1740000)
-
 app.listen(process.env.PORT || 3001, () => console.log('[BACKEND] Rodando'))
